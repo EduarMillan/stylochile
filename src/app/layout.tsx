@@ -1,0 +1,80 @@
+import type { Metadata } from "next";
+import { Manrope, Noto_Serif } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+
+const manrope = Manrope({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const notoSerif = Noto_Serif({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stylocuba.vercel.app";
+
+const SITE_DESCRIPTION =
+  "Directorio y plataforma de gestión para salones de belleza en Cuba. Vitrina pública, reservas con aprobación, historial de clientes y almacén — todo en un solo lugar.";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "StyloCuba · Salones de belleza en Cuba",
+    template: "%s · StyloCuba",
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: "StyloCuba",
+  keywords: [
+    "salones de belleza",
+    "Cuba",
+    "peluquería",
+    "manicure",
+    "estética",
+    "barbería",
+    "reservar cita",
+  ],
+  authors: [{ name: "StyloCuba" }],
+  openGraph: {
+    type: "website",
+    locale: "es_CU",
+    url: SITE_URL,
+    siteName: "StyloCuba",
+    title: "StyloCuba · Salones de belleza en Cuba",
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "StyloCuba · Salones de belleza en Cuba",
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="es"
+      className={`dark ${manrope.variable} ${notoSerif.variable}`}
+    >
+      <body
+        className="min-h-screen flex flex-col font-sans"
+        suppressHydrationWarning
+      >
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  );
+}

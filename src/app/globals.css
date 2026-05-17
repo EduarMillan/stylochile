@@ -1,0 +1,865 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Custom property registrada para que --snake-angle sea animable.
+ * Sin esto, los browsers no interpolan custom properties como ángulos. */
+@property --snake-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Componentes RGB para .area-pulse — registradas como números para que
+ * var() dentro de @keyframes resuelva correctamente por elemento. Default
+ * = oro del brand; se sobreescriben por chip vía inline style. */
+@property --pulse-r {
+  syntax: "<number>";
+  initial-value: 212;
+  inherits: true;
+}
+@property --pulse-g {
+  syntax: "<number>";
+  initial-value: 175;
+  inherits: true;
+}
+@property --pulse-b {
+  syntax: "<number>";
+  initial-value: 55;
+  inherits: true;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-heading: var(--font-serif);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.4);
+  --radius-4xl: calc(var(--radius) * 3);
+}
+
+/*
+ * StyloCuba — Sistema visual: dark glamour + oro metálico
+ * Esquinas redondeadas, oro real con gradientes, sombras doradas, fondo cálido.
+ */
+:root,
+.dark {
+  --background: #0c0905;
+  --foreground: #f5ebd0;
+
+  --card: #181208;
+  --card-foreground: #f5ebd0;
+
+  --popover: #1f180c;
+  --popover-foreground: #f5ebd0;
+
+  --primary: #d4af37;
+  --primary-foreground: #1a1100;
+
+  --secondary: #221a0f;
+  --secondary-foreground: #f7e7ce;
+
+  --muted: #1c1610;
+  --muted-foreground: #c2b18a;
+
+  --accent: #f5d061;
+  --accent-foreground: #1a1100;
+
+  --destructive: #f87171;
+
+  --border: #2d2517;
+  --input: #4d4329;
+  --ring: #d4af37;
+
+  --chart-1: #d4af37;
+  --chart-2: #f5d061;
+  --chart-3: #ffe6a0;
+  --chart-4: #a8842a;
+  --chart-5: #5b4a1a;
+
+  --radius: 0.875rem;
+
+  --sidebar: #0f0a05;
+  --sidebar-foreground: #f5ebd0;
+  --sidebar-primary: #d4af37;
+  --sidebar-primary-foreground: #1a1100;
+  --sidebar-accent: #221a0f;
+  --sidebar-accent-foreground: #f7e7ce;
+  --sidebar-border: #2d2517;
+  --sidebar-ring: #d4af37;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    background:
+      radial-gradient(at 0% -10%, rgba(212, 175, 55, 0.06), transparent 50%),
+      radial-gradient(at 100% 110%, rgba(212, 175, 55, 0.04), transparent 50%),
+      var(--background);
+    background-attachment: fixed;
+    @apply text-foreground antialiased;
+  }
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+}
+
+@layer utilities {
+  /* Oro metálico real con luz/sombra simulada */
+  .bg-gold-gradient {
+    background-image: linear-gradient(
+      135deg,
+      #fde08a 0%,
+      #e9c349 22%,
+      #d4af37 50%,
+      #b8860b 78%,
+      #8a6914 100%
+    );
+  }
+  .bg-gold-gradient-soft {
+    background-image: linear-gradient(
+      135deg,
+      rgba(245, 208, 97, 0.18) 0%,
+      rgba(212, 175, 55, 0.12) 50%,
+      rgba(168, 132, 42, 0.18) 100%
+    );
+  }
+  .text-gold-gradient {
+    background-image: linear-gradient(
+      135deg,
+      #ffe6a0 0%,
+      #f5d061 30%,
+      #d4af37 60%,
+      #a8842a 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .shadow-glam {
+    box-shadow:
+      0 12px 40px -12px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(212, 175, 55, 0.08);
+  }
+  .ring-gold-soft {
+    box-shadow: 0 8px 32px -8px rgba(212, 175, 55, 0.35);
+  }
+  /*
+   * Card "glam" con borde dorado animado.
+   *
+   * Truco: en vez de un pseudo detrás (que sufre con stacking contexts),
+   * usamos el patrón `padding-box + border-box`:
+   *   - El border es 1.5px y transparente — solo deja ver la capa de
+   *     border-box, que es el conic-gradient
+   *   - El padding-box tiene la capa sólida de bg-card → cubre el centro
+   *   - Animamos --snake-angle (registrada con @property) → el conic
+   *     rota → la luz dorada recorre solo el borde
+   */
+  .card-glam {
+    --card-bg: var(--card);
+    position: relative;
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-3xl);
+    background:
+      linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+      conic-gradient(
+          from var(--snake-angle, 0deg),
+          rgba(212, 175, 55, 0.16) 0%,
+          rgba(212, 175, 55, 0.16) 80%,
+          rgba(212, 175, 55, 0.55) 86%,
+          rgba(255, 230, 160, 1) 92%,
+          rgba(212, 175, 55, 0.55) 98%,
+          rgba(212, 175, 55, 0.16) 100%
+        )
+        border-box;
+    box-shadow:
+      0 12px 40px -12px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(212, 175, 55, 0.08);
+    animation: card-snake 6s linear infinite;
+  }
+  /* Variantes de fondo para `card-glam` — mantienen el cometa dorado.
+   * Solo cambian --card-bg (el padding-box, no el border-box).
+   * Jewel tones: oscuros pero vivos, dan diferenciación semántica clara. */
+  .card-glam-primary {
+    --card-bg: #3f3110; /* gold profundo */
+  }
+  .card-glam-destructive {
+    --card-bg: #3a1616; /* vino */
+  }
+  .card-glam-deep {
+    --card-bg: #2e2412; /* warm mid */
+  }
+  .card-glam-warm {
+    --card-bg: #241c0e; /* warm dark */
+  }
+  .card-glam-amber {
+    --card-bg: #4a2e0a; /* naranja-gold */
+  }
+  .card-glam-bronze {
+    --card-bg: #2a1f0a; /* bronce */
+  }
+  .card-glam-emerald {
+    --card-bg: #0d3b2e; /* esmeralda — actividad positiva */
+  }
+  .card-glam-sapphire {
+    --card-bg: #142e54; /* zafiro — info / datos */
+  }
+  .card-glam-amethyst {
+    --card-bg: #2a1545; /* amatista — premium */
+  }
+  .card-glam-ruby {
+    --card-bg: #3d0f24; /* rubí — alerta sutil */
+  }
+  .card-glam-coral {
+    --card-bg: #3d2014; /* coral — warm warning */
+  }
+  .card-glam-slate {
+    --card-bg: #1a2128; /* slate — neutral cool */
+  }
+  @keyframes card-snake {
+    to {
+      --snake-angle: 360deg;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-glam {
+      animation: none;
+    }
+  }
+  /*
+   * Card estática para el panel super-admin: mismo look glam pero sin la
+   * animación del cometa. Variantes de color para orientación visual:
+   * neutral (default), primary (oro), destructive (rojo), deep (warm dark),
+   * warm (tinte cálido sobre card).
+   */
+  /* Estilos base compartidos por todas las variantes — selector múltiple
+   * para evitar problemas de cascade al combinar clases. Cada variante
+   * standalone aplica sus propios bg/border. */
+  .card-static,
+  .card-tone-primary,
+  .card-tone-destructive,
+  .card-tone-deep,
+  .card-tone-warm,
+  .card-tone-amber,
+  .card-tone-bronze {
+    position: relative;
+    border-radius: var(--radius-3xl);
+    border: 1px solid rgba(212, 175, 55, 0.12);
+    box-shadow:
+      0 12px 40px -12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(212, 175, 55, 0.06);
+  }
+
+  .card-static {
+    background-color: #181208;
+  }
+
+  .card-tone-primary {
+    background-color: #3f3110;
+    background-image: linear-gradient(
+      135deg,
+      rgba(212, 175, 55, 0.25),
+      rgba(212, 175, 55, 0.05)
+    );
+    border-color: rgba(212, 175, 55, 0.5);
+  }
+
+  .card-tone-destructive {
+    background-color: #3a1616;
+    background-image: linear-gradient(
+      135deg,
+      rgba(248, 113, 113, 0.22),
+      rgba(248, 113, 113, 0.04)
+    );
+    border-color: rgba(248, 113, 113, 0.5);
+  }
+
+  .card-tone-deep {
+    background-color: #2e2412;
+    background-image: linear-gradient(
+      135deg,
+      rgba(255, 230, 160, 0.1),
+      transparent
+    );
+    border-color: rgba(212, 175, 55, 0.3);
+  }
+
+  .card-tone-warm {
+    background-color: #241c0e;
+    background-image: linear-gradient(
+      135deg,
+      rgba(245, 208, 97, 0.13),
+      transparent
+    );
+    border-color: rgba(245, 208, 97, 0.3);
+  }
+
+  .card-tone-amber {
+    background-color: #4a2e0a;
+    background-image: linear-gradient(
+      135deg,
+      rgba(255, 170, 60, 0.22),
+      rgba(255, 170, 60, 0.05)
+    );
+    border-color: rgba(255, 170, 60, 0.45);
+  }
+
+  .card-tone-bronze {
+    background-color: #2a1f0a;
+    background-image: linear-gradient(
+      135deg,
+      rgba(180, 130, 60, 0.18),
+      transparent
+    );
+    border-color: rgba(180, 130, 60, 0.4);
+  }
+
+  .card-glam-hover {
+    transition:
+      transform 200ms ease,
+      box-shadow 200ms ease;
+  }
+  .card-glam-hover:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 16px 48px -12px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(212, 175, 55, 0.18),
+      0 0 32px -8px rgba(212, 175, 55, 0.25);
+  }
+
+  /* Shimmer del oro: gradiente que se mueve lentamente para simular reflejo metálico */
+  .text-gold-shimmer {
+    background-image: linear-gradient(
+      120deg,
+      #b8860b 0%,
+      #d4af37 18%,
+      #f5d061 32%,
+      #ffe6a0 45%,
+      #fde08a 50%,
+      #ffe6a0 55%,
+      #f5d061 68%,
+      #d4af37 82%,
+      #b8860b 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: gold-shimmer 6s ease-in-out infinite;
+  }
+  @keyframes gold-shimmer {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Pulsos lentos para los orbes de fondo */
+  .animate-orb-slow {
+    animation: orb-pulse 8s ease-in-out infinite;
+  }
+  .animate-orb-slower {
+    animation: orb-pulse 12s ease-in-out infinite;
+  }
+  @keyframes orb-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.08);
+    }
+  }
+
+  /* Levitar suavemente */
+  .animate-float {
+    animation: float 7s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  /*
+   * Auto-pulse para feature chips: simula el efecto de hover en ciclo.
+   * Las 3 cards comparten el mismo keyframe pero con animation-delay
+   * decalado (0s, 2s, 4s) para que solo una esté "highlighted" a la vez.
+   * Ciclo total 6s; cada card highlighted ~1.2s.
+   */
+  .auto-feature-pulse {
+    animation: auto-feature-pulse 6s ease-in-out infinite;
+    transition:
+      transform 0.4s ease,
+      border-color 0.4s ease,
+      background-color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+  @keyframes auto-feature-pulse {
+    0%,
+    4% {
+      transform: translateY(0);
+      border-color: rgba(212, 175, 55, 0.2);
+      background-color: rgba(12, 9, 5, 0.4);
+      box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+    }
+    12%,
+    22% {
+      transform: translateY(-5px);
+      border-color: rgba(212, 175, 55, 0.6);
+      background-color: rgba(12, 9, 5, 0.65);
+      box-shadow: 0 14px 36px -10px rgba(212, 175, 55, 0.35);
+    }
+    32%,
+    100% {
+      transform: translateY(0);
+      border-color: rgba(212, 175, 55, 0.2);
+      background-color: rgba(12, 9, 5, 0.4);
+      box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+    }
+  }
+
+  .auto-feature-halo {
+    animation: auto-feature-halo 6s ease-in-out infinite;
+    transition: opacity 0.4s ease;
+  }
+  @keyframes auto-feature-halo {
+    0%,
+    4% {
+      opacity: 0.4;
+    }
+    12%,
+    22% {
+      opacity: 0.95;
+    }
+    32%,
+    100% {
+      opacity: 0.4;
+    }
+  }
+
+  /* Hover desactiva el ciclo y aplica el estado highlight; al salir, vuelve
+   * suavemente al ciclo gracias al transition. */
+  .auto-feature-pulse:hover {
+    animation-name: none;
+    transform: translateY(-5px);
+    border-color: rgba(212, 175, 55, 0.6);
+    background-color: rgba(12, 9, 5, 0.65);
+    box-shadow: 0 14px 36px -10px rgba(212, 175, 55, 0.35);
+  }
+  .auto-feature-pulse:hover .auto-feature-halo {
+    animation-name: none;
+    opacity: 0.95;
+  }
+
+  /*
+   * Variante del pulse para listas en fondo sólido (no usa overlay de bg).
+   * Anima solo borde, sombra y un lift sutil. Reutiliza auto-feature-halo
+   * para el glow interno. Pensada para listas largas — duración 7s para
+   * que el ciclo no se sienta acelerado.
+   */
+  .card-pulse-attention {
+    animation: card-pulse-attention 7s ease-in-out infinite;
+    transition:
+      transform 0.4s ease,
+      border-color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+  @keyframes card-pulse-attention {
+    0%,
+    6% {
+      transform: translateY(0);
+      border-color: rgba(212, 175, 55, 0.15);
+      box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.4);
+    }
+    14%,
+    22% {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.55);
+      box-shadow:
+        0 16px 40px -10px rgba(0, 0, 0, 0.5),
+        0 0 28px -8px rgba(212, 175, 55, 0.28);
+    }
+    32%,
+    100% {
+      transform: translateY(0);
+      border-color: rgba(212, 175, 55, 0.15);
+      box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.4);
+    }
+  }
+  .card-pulse-attention:hover {
+    animation-name: none;
+    transform: translateY(-4px);
+    border-color: rgba(212, 175, 55, 0.55);
+    box-shadow:
+      0 16px 40px -10px rgba(0, 0, 0, 0.5),
+      0 0 28px -8px rgba(212, 175, 55, 0.28);
+  }
+  .card-pulse-attention:hover .auto-feature-halo {
+    animation-name: none;
+    opacity: 0.95;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card-pulse-attention {
+      animation: none;
+    }
+  }
+
+  /*
+   * Pulso parametrizable por color. R, G, B se pasan como propiedades
+   * registradas vía @property — clave porque var() dentro de @keyframes
+   * no resuelve por elemento en todos los navegadores a menos que la
+   * propiedad esté tipada.
+   */
+  .area-pulse {
+    border-color: rgba(var(--pulse-r), var(--pulse-g), var(--pulse-b), 0.4);
+    animation: area-pulse 6s ease-in-out infinite;
+    transition:
+      transform 0.4s ease,
+      border-color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+  @keyframes area-pulse {
+    0%,
+    3% {
+      transform: translateY(0);
+      border-color: rgba(
+        var(--pulse-r),
+        var(--pulse-g),
+        var(--pulse-b),
+        0.4
+      );
+      box-shadow: 0 0 0 0 transparent;
+    }
+    9%,
+    13% {
+      transform: translateY(-3px);
+      border-color: rgba(
+        var(--pulse-r),
+        var(--pulse-g),
+        var(--pulse-b),
+        0.95
+      );
+      box-shadow:
+        0 8px 22px -8px rgba(var(--pulse-r), var(--pulse-g), var(--pulse-b), 0.45),
+        0 0 18px -4px rgba(var(--pulse-r), var(--pulse-g), var(--pulse-b), 0.55);
+    }
+    19%,
+    100% {
+      transform: translateY(0);
+      border-color: rgba(
+        var(--pulse-r),
+        var(--pulse-g),
+        var(--pulse-b),
+        0.4
+      );
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+  .area-pulse:hover {
+    animation-name: none;
+    transform: translateY(-3px);
+    border-color: rgba(var(--pulse-r), var(--pulse-g), var(--pulse-b), 0.95);
+    box-shadow:
+      0 8px 22px -8px rgba(var(--pulse-r), var(--pulse-g), var(--pulse-b), 0.45),
+      0 0 18px -4px rgba(var(--pulse-r), var(--pulse-g), var(--pulse-b), 0.55);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .area-pulse {
+      animation: none;
+    }
+  }
+
+  /*
+   * Canvas del panel de administración: base azul-negro con glow azul en
+   * la esquina superior derecha y un toque dorado muy sutil al fondo para
+   * preservar continuidad con la identidad del brand. Solo se usa en los
+   * shells del admin / superadmin — la vitrina pública mantiene su tono
+   * cálido vía el body global.
+   */
+  .admin-canvas {
+    background:
+      radial-gradient(
+        at 100% 0%,
+        rgba(56, 96, 188, 0.18),
+        transparent 55%
+      ),
+      radial-gradient(
+        at 0% 100%,
+        rgba(212, 175, 55, 0.06),
+        transparent 60%
+      ),
+      linear-gradient(180deg, #0a0f1c 0%, #060810 100%);
+    background-attachment: fixed;
+  }
+
+  /*
+   * Canvas claro — para super-admin. Sobrescribe las variables del tema
+   * dark en su scope, así todo lo que use bg-card, text-foreground, etc.
+   * se renderiza con paleta clara automáticamente. La gold (--primary)
+   * se mantiene para conservar el accent del brand.
+   */
+  .admin-canvas-light {
+    --background: #fafaf5;
+    --foreground: #1f1810;
+    --card: #ffffff;
+    --card-foreground: #1f1810;
+    --popover: #ffffff;
+    --popover-foreground: #1f1810;
+    --primary: #b8860b;
+    --primary-foreground: #ffffff;
+    --secondary: #f1ebdb;
+    --secondary-foreground: #1f1810;
+    --muted: #f3eee2;
+    --muted-foreground: #6b6354;
+    --accent: #d4af37;
+    --accent-foreground: #1f1810;
+    --destructive: #c0392b;
+    --border: #e6dfcc;
+    --input: #d8d0b9;
+    --ring: #b8860b;
+    --sidebar: #ffffff;
+    --sidebar-foreground: #1f1810;
+    --sidebar-primary: #b8860b;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #f1ebdb;
+    --sidebar-accent-foreground: #1f1810;
+    --sidebar-border: #e6dfcc;
+    --sidebar-ring: #b8860b;
+    background:
+      radial-gradient(
+        at 100% 0%,
+        rgba(56, 96, 188, 0.05),
+        transparent 60%
+      ),
+      radial-gradient(
+        at 0% 100%,
+        rgba(212, 175, 55, 0.05),
+        transparent 60%
+      ),
+      #fafaf5;
+    background-attachment: fixed;
+    color: var(--foreground);
+  }
+  /*
+   * Card-tone-* tienen colores oscuros hardcodeados — sobreescribimos
+   * en el scope light con tintes pastel suaves del mismo significado.
+   */
+  .admin-canvas-light .card-tone-primary {
+    background-color: #fef3c7;
+    background-image: linear-gradient(
+      135deg,
+      rgba(212, 175, 55, 0.12),
+      rgba(212, 175, 55, 0.02)
+    );
+    border-color: rgba(184, 134, 11, 0.4);
+  }
+  .admin-canvas-light .card-tone-destructive {
+    background-color: #fee2e2;
+    background-image: linear-gradient(
+      135deg,
+      rgba(192, 57, 43, 0.1),
+      rgba(192, 57, 43, 0.02)
+    );
+    border-color: rgba(192, 57, 43, 0.4);
+  }
+  .admin-canvas-light .card-tone-deep,
+  .admin-canvas-light .card-tone-warm {
+    background-color: #fdf6e3;
+    background-image: none;
+    border-color: rgba(212, 175, 55, 0.25);
+  }
+  .admin-canvas-light .card-tone-amber {
+    background-color: #fef3c7;
+    background-image: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.12),
+      rgba(245, 158, 11, 0.02)
+    );
+    border-color: rgba(217, 119, 6, 0.4);
+  }
+  .admin-canvas-light .card-tone-bronze {
+    background-color: #faf3e0;
+    background-image: none;
+    border-color: rgba(180, 130, 60, 0.35);
+  }
+  .admin-canvas-light .card-static {
+    background-color: #ffffff;
+  }
+
+  /*
+   * Trazo dibujándose una vez al montar y se queda dibujado.
+   * pathLength="100" normaliza la longitud, fill-mode forwards mantiene
+   * el estado final (offset 0 = totalmente visible).
+   */
+  .draw-line {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: draw-line 1.4s ease-out forwards;
+  }
+  @keyframes draw-line {
+    0% {
+      stroke-dashoffset: 100;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Fade-in suave reusable */
+  @keyframes fade-in-soft {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /*
+   * CTA pulse: respiración del halo dorado para el botón principal.
+   * Llama la atención sin ser intrusivo. Se pausa en hover.
+   */
+  .cta-pulse {
+    animation: cta-pulse 3.6s ease-in-out infinite;
+  }
+  .cta-pulse:hover {
+    animation-play-state: paused;
+  }
+  @keyframes cta-pulse {
+    0%,
+    100% {
+      box-shadow:
+        0 8px 24px -6px rgba(212, 175, 55, 0.4),
+        0 0 0 0 rgba(212, 175, 55, 0);
+    }
+    50% {
+      box-shadow:
+        0 12px 40px -6px rgba(212, 175, 55, 0.7),
+        0 0 0 6px rgba(212, 175, 55, 0.08);
+    }
+  }
+
+  /*
+   * Circuit travel: un segmento dorado viaja por una path SVG.
+   * El path total mide ~1200 unidades; 40 visibles + 1160 hueco hacen que
+   * solo un trazo corto sea visible y se desplace por el camino completo.
+   * La duración varía por línea (vía style="animation-duration:Xs" en el JSX).
+   */
+  .animate-circuit-travel {
+    stroke-dasharray: 40 1160;
+    animation: circuit-travel 9s linear infinite;
+  }
+  @keyframes circuit-travel {
+    from {
+      stroke-dashoffset: 0;
+    }
+    to {
+      stroke-dashoffset: -1200;
+    }
+  }
+
+  /*
+   * Link con underline dorado animado: aparece desde el centro al hover.
+   */
+  .link-gold {
+    position: relative;
+    transition: color 0.2s ease;
+  }
+  .link-gold::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #d4af37 30%,
+      #f5d061 50%,
+      #d4af37 70%,
+      transparent
+    );
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .link-gold:hover {
+    color: var(--primary);
+  }
+  .link-gold:hover::after {
+    transform: scaleX(1);
+  }
+
+  /*
+   * Override de stroke para el SVG line-art de la mujer.
+   * El SVG fuente usa stroke-width 8.64 sobre viewBox 8473×10096; lo
+   * subimos a 14 y aplicamos el gradiente dorado.
+   */
+  .woman-art path,
+  .woman-art polygon {
+    fill: none;
+    stroke: url(#gold-line);
+    stroke-width: 14;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+}
