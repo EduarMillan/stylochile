@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/server";
  *    re-crawlee cuando un dueño actualiza su salón.
  */
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stylocuba.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stylochile.vercel.app";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();

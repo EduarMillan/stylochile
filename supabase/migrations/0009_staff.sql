@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0009 (Fase 1.6)
+-- StyloChile — Migración 0009 (Fase 1.6)
 -- Staff del salón: estilistas, manicuristas, estomatólogos, etc.
 -- ============================================================================
 

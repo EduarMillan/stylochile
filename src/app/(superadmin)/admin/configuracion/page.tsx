@@ -20,8 +20,8 @@ export default async function PlatformSettingsPage() {
     : {
         trial_days: 90,
         grace_period_days: 5,
-        monthly_price: 1000,
-        currency: "CUP",
+        monthly_price: 9990,
+        currency: "CLP",
         admin_whatsapp: null,
         updated_at: new Date().toISOString(),
       };

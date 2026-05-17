@@ -8,7 +8,7 @@ type ReservationContext = {
 };
 
 function formatDate(d: Date): string {
-  return d.toLocaleDateString("es-CU", {
+  return d.toLocaleDateString("es-CL", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -16,7 +16,7 @@ function formatDate(d: Date): string {
 }
 
 function formatTime(d: Date): string {
-  return d.toLocaleTimeString("es-CU", {
+  return d.toLocaleTimeString("es-CL", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,

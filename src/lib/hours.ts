@@ -13,10 +13,10 @@ const WEEKDAY_MAP: Record<string, DayKey> = {
 export type OpenStatus = "open" | "closed";
 
 /**
- * Devuelve el estado abierto/cerrado de un salón **en hora de Cuba**.
- * Usa Intl.DateTimeFormat con timeZone "America/Havana", así da el mismo
- * resultado en cualquier server / cliente sin importar su zona horaria.
- * Retorna null si no hay hours definidos (no se puede determinar).
+ * Devuelve el estado abierto/cerrado de un salón **en hora de Chile**.
+ * Usa Intl.DateTimeFormat con timeZone "America/Santiago", así da el
+ * mismo resultado en cualquier server / cliente sin importar su zona
+ * horaria. Retorna null si no hay hours definidos.
  */
 export function getOpenStatus(
   hours: WeeklyHours | null,
@@ -25,7 +25,7 @@ export function getOpenStatus(
   if (!hours) return null;
 
   const fmt = new Intl.DateTimeFormat("en-US", {
-    timeZone: "America/Havana",
+    timeZone: "America/Santiago",
     weekday: "short",
     hourCycle: "h23",
     hour: "2-digit",

@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0003 (Fase 2)
+-- StyloChile — Migración 0003 (Fase 2)
 -- Sistema de reservas: tabla appointments + función pública para slots tomados.
 -- ============================================================================
 

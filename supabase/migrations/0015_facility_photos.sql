@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0015
+-- StyloChile — Migración 0015
 -- Fotos de instalaciones / equipamiento del salón. Tabla independiente para
 -- no mezclar con gallery_items (que es antes/después).
 -- ============================================================================

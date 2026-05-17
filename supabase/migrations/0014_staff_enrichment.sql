@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0014
+-- StyloChile — Migración 0014
 -- Enriquece la tabla staff con especialidades, experiencia, instagram y
 -- certificaciones. Todo opcional para no romper datos existentes.
 -- ============================================================================

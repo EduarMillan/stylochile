@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/slug";
-import { CUBA_MUNICIPIOS } from "@/lib/cuba";
+import { CHILE_COMUNAS } from "@/lib/chile";
 import { DEFAULT_HOURS, type WeeklyHours } from "@/lib/types";
 import { removeStorageFiles } from "@/lib/storage";
 
@@ -37,8 +37,6 @@ const SalonSchema = z.object({
   description: z.string().max(2000).optional().or(z.literal("")),
   calle: z.string().max(120).optional().or(z.literal("")),
   numero: z.string().max(40).optional().or(z.literal("")),
-  entre_calle_a: z.string().max(120).optional().or(z.literal("")),
-  entre_calle_b: z.string().max(120).optional().or(z.literal("")),
   reparto: z.string().max(120).optional().or(z.literal("")),
   municipio: z.string().max(120).optional().or(z.literal("")),
   provincia: z.string().max(120).optional().or(z.literal("")),
@@ -79,14 +77,14 @@ export async function saveSalonAction(
   const provincia = String(formData.get("provincia") ?? "").trim();
   const municipio = String(formData.get("municipio") ?? "").trim();
 
-  // Valida combinación provincia/municipio
-  if (provincia && !(provincia in CUBA_MUNICIPIOS)) {
-    return { error: "Provincia no válida." };
+  // Valida combinación región/comuna
+  if (provincia && !(provincia in CHILE_COMUNAS)) {
+    return { error: "Región no válida." };
   }
   if (municipio && provincia) {
-    const valid = CUBA_MUNICIPIOS[provincia] ?? [];
+    const valid = CHILE_COMUNAS[provincia] ?? [];
     if (!valid.includes(municipio)) {
-      return { error: "Municipio no pertenece a la provincia seleccionada." };
+      return { error: "La comuna no pertenece a la región seleccionada." };
     }
   }
 
@@ -96,8 +94,6 @@ export async function saveSalonAction(
     description: String(formData.get("description") ?? "").trim(),
     calle: String(formData.get("calle") ?? "").trim(),
     numero: String(formData.get("numero") ?? "").trim(),
-    entre_calle_a: String(formData.get("entre_calle_a") ?? "").trim(),
-    entre_calle_b: String(formData.get("entre_calle_b") ?? "").trim(),
     reparto: String(formData.get("reparto") ?? "").trim(),
     municipio,
     provincia,
@@ -137,8 +133,6 @@ export async function saveSalonAction(
     description: data.description || null,
     calle: data.calle || null,
     numero: data.numero || null,
-    entre_calle_a: data.entre_calle_a || null,
-    entre_calle_b: data.entre_calle_b || null,
     reparto: data.reparto || null,
     municipio: data.municipio || null,
     provincia: data.provincia || null,

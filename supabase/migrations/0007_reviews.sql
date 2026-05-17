@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0007 (Fase 5)
+-- StyloChile — Migración 0007 (Fase 5)
 -- Reseñas + RPC para verificar que un teléfono pertenece a una cita aprobada.
 -- ============================================================================
 

@@ -14,7 +14,7 @@ export function SuspendedScreen({
 }) {
   const waUrl = adminWhatsapp
     ? `https://wa.me/${adminWhatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-        `Hola, soy dueño del salón "${salonName}" en StyloCuba. Mi cuenta fue suspendida, quiero coordinar el pago para reactivarla.`,
+        `Hola, soy dueño del salón "${salonName}" en StyloChile. Mi cuenta fue suspendida, quiero coordinar el pago para reactivarla.`,
       )}`
     : null;
 

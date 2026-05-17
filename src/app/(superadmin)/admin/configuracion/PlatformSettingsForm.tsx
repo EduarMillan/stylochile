@@ -86,7 +86,7 @@ export function PlatformSettingsForm({
             maxLength={8}
             defaultValue={initial.currency}
             required
-            placeholder="CUP"
+            placeholder="CLP"
           />
         </div>
       </div>

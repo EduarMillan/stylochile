@@ -7,7 +7,7 @@ import { ImageResponse } from "next/og";
 // Si el JSX dentro de ImageResponse falla, Vercel logs muestran el
 // error y la página fallback usa el icon como OG image.
 
-export const alt = "StyloCuba · Salones de belleza en Cuba";
+export const alt = "StyloChile · Salones de belleza en Chile";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -82,7 +82,7 @@ export default function OgHome() {
               color: "transparent",
             }}
           >
-            STYLOCUBA
+            STYLOCHILE
           </div>
         </div>
 
@@ -122,7 +122,7 @@ export default function OgHome() {
             textTransform: "uppercase",
           }}
         >
-          Salones de belleza · Cuba
+          Salones de belleza · Chile
         </div>
       </div>
     ),

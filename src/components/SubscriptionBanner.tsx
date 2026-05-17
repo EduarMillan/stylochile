@@ -46,7 +46,7 @@ function getPhase(
 }
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("es-CU", {
+  return new Date(iso).toLocaleDateString("es-CL", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -54,7 +54,7 @@ function formatDate(iso: string) {
 }
 
 function formatPrice(amount: number, currency: string) {
-  return `${amount.toLocaleString("es-CU")} ${currency}`;
+  return `${amount.toLocaleString("es-CL")} ${currency}`;
 }
 
 function WhatsAppButton({ url }: { url: string }) {
@@ -101,7 +101,7 @@ export function SubscriptionBanner({
 
   const waUrl = adminWhatsapp
     ? `https://wa.me/${adminWhatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-        "Hola, soy dueño de un salón en StyloCuba. Quiero coordinar el pago de mi plan mensual.",
+        "Hola, soy dueño de un salón en StyloChile. Quiero coordinar el pago de mi plan mensual.",
       )}`
     : null;
 

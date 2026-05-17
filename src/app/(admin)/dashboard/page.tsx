@@ -189,7 +189,7 @@ export default async function DashboardPage() {
     d.setDate(now.getDate() + i);
     d.setHours(0, 0, 0, 0);
     days.push({
-      label: d.toLocaleDateString("es-CU", { weekday: "short" }).slice(0, 3),
+      label: d.toLocaleDateString("es-CL", { weekday: "short" }).slice(0, 3),
       date: d,
       count: 0,
     });
@@ -328,7 +328,7 @@ export default async function DashboardPage() {
                   {nextAppt.client_name}
                 </p>
                 <p className="text-muted-foreground">
-                  {new Date(nextAppt.starts_at).toLocaleString("es-CU", {
+                  {new Date(nextAppt.starts_at).toLocaleString("es-CL", {
                     weekday: "short",
                     day: "numeric",
                     hour: "2-digit",

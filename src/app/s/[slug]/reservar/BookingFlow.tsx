@@ -421,7 +421,7 @@ function StepService({
                 </span>
                 {s.price != null && (
                   <span className="whitespace-nowrap text-sm font-medium text-gold-gradient">
-                    {s.price.toLocaleString("es-CU")} {s.currency}
+                    {s.price.toLocaleString("es-CL")} {s.currency}
                   </span>
                 )}
               </div>
@@ -626,7 +626,7 @@ function StepData({
               required
               type="tel"
               autoComplete="tel"
-              placeholder="+53 5 123 4567"
+              placeholder="+56 9 1234 5678"
             />
           </div>
         </div>

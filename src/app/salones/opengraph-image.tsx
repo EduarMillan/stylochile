@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 // OG image para /salones — directorio público.
 
-export const alt = "Directorio de salones de belleza · StyloCuba";
+export const alt = "Directorio de salones de belleza · StyloChile";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -58,7 +58,7 @@ export default function OgSalones() {
               color: "transparent",
             }}
           >
-            STYLOCUBA
+            STYLOCHILE
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export default function OgSalones() {
             lineHeight: 1,
           }}
         >
-          Salones de Cuba
+          Salones de Chile
         </div>
 
         <div

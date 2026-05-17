@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0002 (Fase 1.5)
+-- StyloChile — Migración 0002 (Fase 1.5)
 -- Añade: salon_areas, services, gallery_items y bucket de Storage para fotos.
 -- Pegar en el SQL Editor de Supabase si ya corriste el schema inicial (0001).
 -- ============================================================================
@@ -53,7 +53,7 @@ create table public.services (
   name text not null,
   description text,
   price numeric(10, 2),
-  currency text not null default 'CUP',
+  currency text not null default 'CLP',
   duration_minutes int,
   sort_order int not null default 0,
   created_at timestamptz not null default now()

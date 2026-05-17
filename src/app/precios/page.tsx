@@ -15,9 +15,9 @@ import { createClient } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Precios y plan mensual",
   description:
-    "Plan único de StyloCuba: trial gratuito, luego mensualidad. Sin contratos, paga por transferencia. Todo lo que necesita tu salón en una sola plataforma.",
+    "Plan único de StyloChile: trial gratuito, luego mensualidad. Sin contratos, paga por transferencia. Todo lo que necesita tu salón en una sola plataforma.",
   openGraph: {
-    title: "Precios y plan mensual · StyloCuba",
+    title: "Precios y plan mensual · StyloChile",
     description:
       "Plan único: trial gratuito y luego mensualidad. Todo lo que necesita tu salón.",
     url: "/precios",
@@ -28,7 +28,7 @@ const FEATURES = [
   {
     icon: Star,
     title: "Vitrina pública del salón",
-    desc: "Tu salón visible en el directorio público. URL propia tipo stylocuba.com/s/tu-salon con logo, horarios, ubicación y áreas que ofreces.",
+    desc: "Tu salón visible en el directorio público. URL propia tipo stylochile.com/s/tu-salon con logo, horarios, ubicación y áreas que ofreces.",
   },
   {
     icon: Calendar,
@@ -65,7 +65,7 @@ const FEATURES = [
 const FAQ = [
   {
     q: "¿Cómo es el pago?",
-    a: "Pagas por transferencia (CUP, MLC, o lo que coordines con el admin). Cada mes te recordamos por el banner del dashboard que el pago se acerca. Un WhatsApp directo te conecta con nosotros para coordinar.",
+    a: "Pagas por transferencia bancaria (CLP) o lo que coordines con el admin. Cada mes te recordamos por el banner del dashboard que el pago se acerca. Un WhatsApp directo te conecta con nosotros para coordinar.",
   },
   {
     q: "¿Qué pasa si no pago un mes?",
@@ -86,7 +86,7 @@ const FAQ = [
 ];
 
 function formatPrice(amount: number, currency: string) {
-  return `${amount.toLocaleString("es-CU")} ${currency}`;
+  return `${amount.toLocaleString("es-CL")} ${currency}`;
 }
 
 export default async function PreciosPage() {
@@ -98,8 +98,8 @@ export default async function PreciosPage() {
     .maybeSingle();
 
   const trialDays = data?.trial_days ?? 90;
-  const monthlyPrice = Number(data?.monthly_price ?? 1000);
-  const currency = data?.currency ?? "CUP";
+  const monthlyPrice = Number(data?.monthly_price ?? 9990);
+  const currency = data?.currency ?? "CLP";
   const graceDays = data?.grace_period_days ?? 5;
 
   return (
@@ -124,11 +124,11 @@ export default async function PreciosPage() {
           {/* Price card */}
           <div className="card-glam mx-auto mt-12 max-w-md p-8 sm:p-10">
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-primary">
-              Plan StyloCuba
+              Plan StyloChile
             </p>
             <div className="mt-4 flex items-baseline justify-center gap-2">
               <span className="font-serif text-6xl tracking-tight text-gold-gradient sm:text-7xl">
-                {monthlyPrice.toLocaleString("es-CU")}
+                {monthlyPrice.toLocaleString("es-CL")}
               </span>
               <span className="font-serif text-xl text-muted-foreground">
                 {currency}/mes
@@ -233,7 +233,7 @@ export default async function PreciosPage() {
       </main>
 
       <footer className="border-t border-border/60 px-4 py-6 text-center text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground sm:px-8 lg:px-16 lg:py-8">
-        © 2026 StyloCuba
+        © 2026 StyloChile
       </footer>
     </div>
   );

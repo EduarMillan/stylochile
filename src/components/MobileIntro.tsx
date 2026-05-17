@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { WomanLineDrawing } from "./WomanLineDrawing";
 
 const MOBILE_BREAKPOINT = "(max-width: 1023px)";
-const SEEN_KEY = "stylocuba_intro_seen";
+const SEEN_KEY = "stylochile_intro_seen";
 
 // Tiempos del flujo (ms desde el montaje):
 //  - El último path empieza a dibujarse a ~3.6s (12*0.25 + 21*0.06)
@@ -79,10 +79,10 @@ export function MobileIntro() {
       {/* Wordmark arriba */}
       <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center animate-in fade-in slide-in-from-top-4 duration-700">
         <p className="font-serif text-3xl tracking-tight text-gold-gradient">
-          STYLOCUBA
+          STYLOCHILE
         </p>
         <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
-          Salones de belleza · Cuba
+          Salones de belleza · Chile
         </p>
       </div>
 

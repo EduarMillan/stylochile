@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { DEFAULT_HOURS, type Salon, type WeeklyHours } from "@/lib/types";
 import { slugify } from "@/lib/slug";
-import { CUBA_MUNICIPIOS, CUBA_PROVINCIAS } from "@/lib/cuba";
+import { CHILE_COMUNAS, CHILE_REGIONES } from "@/lib/chile";
 import { ImageUpload } from "@/components/ImageUpload";
 import { saveSalonAction, type SaveSalonState } from "./actions";
 import { HoursEditor } from "./HoursEditor";
@@ -43,7 +43,7 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
 
   const [provincia, setProvincia] = useState<string>(salon?.provincia ?? "");
   const [municipio, setMunicipio] = useState<string>(salon?.municipio ?? "");
-  const municipios = provincia ? (CUBA_MUNICIPIOS[provincia] ?? []) : [];
+  const municipios = provincia ? (CHILE_COMUNAS[provincia] ?? []) : [];
 
   const [logoUrl, setLogoUrl] = useState<string | null>(salon?.logo_url ?? null);
 
@@ -81,7 +81,7 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
           </Field>
           <Field
             label="URL pública"
-            hint={`Tu salón estará en stylocuba.com/s/${slug || "tu-salon"}`}
+            hint={`Tu salón estará en stylochile.com/s/${slug || "tu-salon"}`}
           >
             <Input
               name="slug"
@@ -135,7 +135,7 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
       <Section
         label="Contacto"
         title="Cómo te contactan"
-        description="El WhatsApp se usa para recibir las solicitudes de reserva. Escribe el número con código de país, sin espacios ni símbolos (ej. para Cuba: 5358123456; para Chile: 56971363610)."
+        description="El WhatsApp se usa para recibir las solicitudes de reserva. Escribe el número con código de país, sin espacios ni símbolos (ej. 56971234567)."
       >
         <FieldGroup>
           <Field label="Teléfono fijo (opcional)">
@@ -143,7 +143,7 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
               name="phone"
               type="tel"
               defaultValue={salon?.phone ?? ""}
-              placeholder="7 123 4567"
+              placeholder="22 123 4567"
             />
           </Field>
           <Field label="WhatsApp">
@@ -158,7 +158,7 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
                 pattern="[0-9]*"
                 maxLength={15}
                 defaultValue={digitsOnly(salon?.whatsapp ?? null)}
-                placeholder="5358123456"
+                placeholder="56971234567"
                 className="flex-1 rounded-none border-0 focus-visible:ring-0"
               />
             </div>
@@ -179,7 +179,7 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
             <Input
               name="calle"
               defaultValue={salon?.calle ?? ""}
-              placeholder="Ej. Calle 23"
+              placeholder="Ej. Av. Providencia"
             />
           </Field>
           <Field label="Número" hint="Ej. 234, 234A o «s/n»">
@@ -190,44 +190,28 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
             />
           </Field>
         </FieldGroup>
-        <FieldGroup>
-          <Field label="Entre calle">
-            <Input
-              name="entre_calle_a"
-              defaultValue={salon?.entre_calle_a ?? ""}
-              placeholder="L"
-            />
-          </Field>
-          <Field label="Y calle">
-            <Input
-              name="entre_calle_b"
-              defaultValue={salon?.entre_calle_b ?? ""}
-              placeholder="M"
-            />
-          </Field>
-        </FieldGroup>
-        <Field label="Reparto / Barrio">
+        <Field label="Sector / Barrio (opcional)">
           <Input
             name="reparto"
             defaultValue={salon?.reparto ?? ""}
-            placeholder="Ej. Vedado"
+            placeholder="Ej. Pedro de Valdivia"
           />
         </Field>
         <FieldGroup>
-          <Field label="Provincia">
+          <Field label="Región">
             <Select
               value={provincia}
               onValueChange={(v) => {
                 const next = v ?? "";
                 setProvincia(next);
-                setMunicipio(""); // resetea al cambiar provincia
+                setMunicipio(""); // resetea al cambiar región
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Selecciona una provincia" />
+                <SelectValue placeholder="Selecciona una región" />
               </SelectTrigger>
               <SelectContent>
-                {CUBA_PROVINCIAS.map((p) => (
+                {CHILE_REGIONES.map((p) => (
                   <SelectItem key={p} value={p}>
                     {p}
                   </SelectItem>
@@ -235,7 +219,7 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
               </SelectContent>
             </Select>
           </Field>
-          <Field label="Municipio">
+          <Field label="Comuna">
             <Select
               value={municipio}
               onValueChange={(v) => setMunicipio(v ?? "")}
@@ -245,8 +229,8 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
                 <SelectValue
                   placeholder={
                     provincia
-                      ? "Selecciona un municipio"
-                      : "Selecciona una provincia primero"
+                      ? "Selecciona una comuna"
+                      : "Selecciona una región primero"
                   }
                 />
               </SelectTrigger>
@@ -330,7 +314,7 @@ function PublishToggle({
           {isPublished && slug && (
             <p className="mt-3 text-sm text-muted-foreground">
               Enlace público:{" "}
-              <span className="text-primary">stylocuba.com/s/{slug}</span>
+              <span className="text-primary">stylochile.com/s/{slug}</span>
             </p>
           )}
         </div>

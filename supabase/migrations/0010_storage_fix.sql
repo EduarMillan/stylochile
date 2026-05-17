@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0010 (Fix de storage)
+-- StyloChile — Migración 0010 (Fix de storage)
 -- Asegura que el bucket `salon-media` existe y que las policies de RLS
 -- usan el índice correcto `[1]` (PostgreSQL arrays son 1-indexed).
 -- Corre esto si los uploads de imágenes (galería, staff, fotos de cliente)

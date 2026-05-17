@@ -1,5 +1,5 @@
 -- ============================================
--- StyloCuba — Migración 0012
+-- StyloChile — Migración 0012
 -- Fix: Políticas de Storage - versión alternativa
 -- ============================================
 

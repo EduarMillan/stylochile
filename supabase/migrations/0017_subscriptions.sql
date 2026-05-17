@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0017
+-- StyloChile — Migración 0017
 -- Sistema de subscriptions: trial configurable + plan mensual con pago
 -- manual. Sin recibos formales (v1 simplificado) — el super-admin marca
 -- como pagado y se extiende el período un mes.
@@ -12,9 +12,9 @@ create table if not exists public.platform_settings (
     check (trial_days >= 1 and trial_days <= 365),
   grace_period_days integer not null default 5
     check (grace_period_days >= 0 and grace_period_days <= 30),
-  monthly_price numeric(12, 2) not null default 1000
+  monthly_price numeric(12, 2) not null default 9990
     check (monthly_price >= 0),
-  currency text not null default 'CUP',
+  currency text not null default 'CLP',
   admin_whatsapp text,
   updated_at timestamptz not null default now()
 );

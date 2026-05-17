@@ -1,6 +1,6 @@
 -- ============================================================================
--- StyloCuba — Migración 0006
--- Reemplaza address/lat/lng por dirección estructurada cubana.
+-- StyloChile — Migración 0006
+-- Reemplaza address/lat/lng por dirección estructurada chilena.
 -- ============================================================================
 
 alter table public.salons drop column if exists address;

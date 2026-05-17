@@ -69,7 +69,7 @@ export function AdminShell({
           href="/dashboard"
           className="font-serif text-lg tracking-tight text-gold-gradient"
         >
-          STYLOCUBA
+          STYLOCHILE
         </Link>
         <button
           type="button"
@@ -103,7 +103,7 @@ export function AdminShell({
               href="/dashboard"
               className="font-serif text-xl tracking-tight text-gold-gradient"
             >
-              STYLOCUBA
+              STYLOCHILE
             </Link>
             {salon ? (
               <>
@@ -233,7 +233,7 @@ export function AdminShell({
           {adminWhatsapp && (
             <a
               href={`https://wa.me/${adminWhatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-                "Hola, soy dueño de un salón en StyloCuba y necesito ayuda.",
+                "Hola, soy dueño de un salón en StyloChile y necesito ayuda.",
               )}`}
               target="_blank"
               rel="noopener noreferrer"

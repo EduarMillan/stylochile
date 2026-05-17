@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0004 (Fase 3)
+-- StyloChile — Migración 0004 (Fase 3)
 -- Clientes del salón + historial fotográfico de cada cliente.
 -- ============================================================================
 

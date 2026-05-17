@@ -16,40 +16,40 @@ const notoSerif = Noto_Serif({
 });
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stylocuba.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stylochile.vercel.app";
 
 const SITE_DESCRIPTION =
-  "Directorio y plataforma de gestión para salones de belleza en Cuba. Vitrina pública, reservas con aprobación, historial de clientes y almacén — todo en un solo lugar.";
+  "Directorio y plataforma de gestión para salones de belleza en Chile. Vitrina pública, reservas con aprobación, historial de clientes y almacén — todo en un solo lugar.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "StyloCuba · Salones de belleza en Cuba",
-    template: "%s · StyloCuba",
+    default: "StyloChile · Salones de belleza en Chile",
+    template: "%s · StyloChile",
   },
   description: SITE_DESCRIPTION,
-  applicationName: "StyloCuba",
+  applicationName: "StyloChile",
   keywords: [
     "salones de belleza",
-    "Cuba",
+    "Chile",
     "peluquería",
     "manicure",
     "estética",
     "barbería",
-    "reservar cita",
+    "reservar hora",
   ],
-  authors: [{ name: "StyloCuba" }],
+  authors: [{ name: "StyloChile" }],
   openGraph: {
     type: "website",
-    locale: "es_CU",
+    locale: "es_CL",
     url: SITE_URL,
-    siteName: "StyloCuba",
-    title: "StyloCuba · Salones de belleza en Cuba",
+    siteName: "StyloChile",
+    title: "StyloChile · Salones de belleza en Chile",
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "StyloCuba · Salones de belleza en Cuba",
+    title: "StyloChile · Salones de belleza en Chile",
     description: SITE_DESCRIPTION,
   },
   robots: {

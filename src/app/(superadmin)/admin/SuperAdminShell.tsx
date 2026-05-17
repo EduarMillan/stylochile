@@ -52,7 +52,7 @@ export function SuperAdminShell({
             href="/admin"
             className="font-serif text-lg tracking-tight text-gold-gradient"
           >
-            STYLOCUBA
+            STYLOCHILE
           </Link>
           <span className="rounded-full border border-destructive/60 bg-destructive/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-destructive">
             Admin
@@ -87,7 +87,7 @@ export function SuperAdminShell({
               href="/admin"
               className="font-serif text-xl tracking-tight text-gold-gradient"
             >
-              STYLOCUBA
+              STYLOCHILE
             </Link>
             <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-destructive/60 bg-destructive/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-destructive">
               <span className="size-1.5 rounded-full bg-destructive" />

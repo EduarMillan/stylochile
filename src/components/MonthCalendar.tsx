@@ -35,7 +35,7 @@ export function MonthCalendar({
   const canGoPrev = viewMonth.getTime() > minMonth.getTime();
   const canGoNext = viewMonth.getTime() < maxMonth.getTime();
 
-  const monthLabel = viewMonth.toLocaleDateString("es-CU", {
+  const monthLabel = viewMonth.toLocaleDateString("es-CL", {
     month: "long",
     year: "numeric",
   });

@@ -58,7 +58,7 @@ function ReviewRow({ review }: { review: Review }) {
             </span>
           </div>
           <time className="mt-1 block text-xs uppercase tracking-[0.15em] text-muted-foreground">
-            {new Date(review.created_at).toLocaleString("es-CU", {
+            {new Date(review.created_at).toLocaleString("es-CL", {
               day: "numeric",
               month: "short",
               year: "numeric",

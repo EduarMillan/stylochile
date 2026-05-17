@@ -1,5 +1,5 @@
 -- ============================================
--- StyloCuba — Migración 0009
+-- StyloChile — Migración 0009
 -- Fix completo: Políticas de Storage para "salon-media"
 -- ============================================
 

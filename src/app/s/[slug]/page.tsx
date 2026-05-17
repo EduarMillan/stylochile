@@ -8,7 +8,7 @@ import { PublicHeader } from "@/components/PublicHeader";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ServicesTabs } from "./ServicesTabs";
 import { GalleryPaginated } from "./GalleryPaginated";
-import { composeAddress } from "@/lib/cuba";
+import { composeAddress } from "@/lib/chile";
 import {
   DAYS,
   type GalleryItem,
@@ -61,7 +61,7 @@ export async function generateMetadata({
   const title = `${data.name}${location ? ` · ${location}` : ""}`;
   const description =
     data.description ??
-    `Conoce ${data.name}, salón de belleza en Cuba. Servicios, fotos, horarios y reservas en StyloCuba.`;
+    `Conoce ${data.name}, salón de belleza en Chile. Servicios, fotos, horarios y reservas en StyloChile.`;
 
   return {
     title,
@@ -173,8 +173,6 @@ export default async function SalonShowcasePage({
   const fullAddress = composeAddress({
     calle: salon.calle,
     numero: salon.numero,
-    entre_calle_a: salon.entre_calle_a,
-    entre_calle_b: salon.entre_calle_b,
     reparto: salon.reparto,
     municipio: salon.municipio,
     provincia: salon.provincia,
@@ -246,7 +244,7 @@ export default async function SalonShowcasePage({
             )}
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary drop-shadow">
-                Salón de belleza · Cuba
+                Salón de belleza · Chile
               </p>
               <h1 className="mt-2 font-serif text-4xl tracking-tight drop-shadow-lg sm:text-5xl lg:text-6xl">
                 {salon.name}
@@ -530,15 +528,7 @@ export default async function SalonShowcasePage({
           {hasAddress && (
             <div className="mt-5 space-y-1 text-base leading-relaxed">
               {(salon.calle || salon.numero) && (
-                <p>
-                  {[salon.calle, salon.numero].filter(Boolean).join(" ")}
-                  {salon.entre_calle_a && salon.entre_calle_b && (
-                    <span className="text-muted-foreground">
-                      {" "}
-                      e/ {salon.entre_calle_a} y {salon.entre_calle_b}
-                    </span>
-                  )}
-                </p>
+                <p>{[salon.calle, salon.numero].filter(Boolean).join(" ")}</p>
               )}
               {salon.reparto && (
                 <p className="text-muted-foreground">{salon.reparto}</p>
@@ -638,7 +628,7 @@ export default async function SalonShowcasePage({
                 <div className="flex items-center justify-between gap-3">
                   <Stars value={r.rating} />
                   <time className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                    {new Date(r.created_at).toLocaleDateString("es-CU", {
+                    {new Date(r.created_at).toLocaleDateString("es-CL", {
                       day: "numeric",
                       month: "short",
                       year: "numeric",
@@ -660,7 +650,7 @@ export default async function SalonShowcasePage({
       </section>
 
       <footer className="border-t border-border/60 px-4 py-6 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground sm:px-8 lg:px-16 lg:py-8">
-        © 2026 StyloCuba
+        © 2026 StyloChile
       </footer>
     </div>
   );

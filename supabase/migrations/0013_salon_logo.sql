@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0013
+-- StyloChile — Migración 0013
 -- Agrega logo_url al salón para mostrarlo en la vitrina pública.
 -- ============================================================================
 

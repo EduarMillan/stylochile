@@ -16,7 +16,7 @@ const ItemSchema = z.object({
     .union([z.string().length(0), z.coerce.number().min(0)])
     .nullable()
     .optional(),
-  currency: z.string().min(1).max(8).default("CUP"),
+  currency: z.string().min(1).max(8).default("CLP"),
   supplier: z.string().max(120).optional().or(z.literal("")),
   notes: z.string().max(1000).optional().or(z.literal("")),
 });
@@ -71,7 +71,7 @@ export async function saveItemAction(
     quantity: formData.get("quantity") ?? 0,
     min_quantity: formData.get("min_quantity") ?? 0,
     unit_cost: pickNumber(formData.get("unit_cost")),
-    currency: String(formData.get("currency") ?? "CUP").trim() || "CUP",
+    currency: String(formData.get("currency") ?? "CLP").trim() || "CLP",
     supplier: String(formData.get("supplier") ?? "").trim(),
     notes: String(formData.get("notes") ?? "").trim(),
   });

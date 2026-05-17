@@ -50,7 +50,7 @@ export default async function AdminOverviewPage() {
         Panel global · Resumen
       </p>
       <h1 className="mt-2 font-serif text-4xl tracking-tight">
-        StyloCuba en cifras
+        StyloChile en cifras
       </h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
         Estado actual de toda la plataforma. Como super-admin tienes acceso
@@ -126,7 +126,7 @@ export default async function AdminOverviewPage() {
                   <p className="font-serif text-lg">{s.name}</p>
                   <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
                     /s/{s.slug} · creado{" "}
-                    {new Date(s.created_at).toLocaleDateString("es-CU", {
+                    {new Date(s.created_at).toLocaleDateString("es-CL", {
                       day: "numeric",
                       month: "short",
                       year: "numeric",

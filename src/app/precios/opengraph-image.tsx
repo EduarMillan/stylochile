@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 // de platform_settings, así cualquier cambio en el panel admin se
 // refleja al regenerarse la imagen (no cache estática).
 
-export const alt = "Plan StyloCuba · Salones de belleza en Cuba";
+export const alt = "Plan StyloChile · Salones de belleza en Chile";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -18,8 +18,8 @@ export default async function OgPrecios() {
     .maybeSingle();
 
   const trialDays = data?.trial_days ?? 90;
-  const monthlyPrice = Number(data?.monthly_price ?? 1000);
-  const currency = data?.currency ?? "CUP";
+  const monthlyPrice = Number(data?.monthly_price ?? 9990);
+  const currency = data?.currency ?? "CLP";
 
   return new ImageResponse(
     (
@@ -72,7 +72,7 @@ export default async function OgPrecios() {
               color: "transparent",
             }}
           >
-            STYLOCUBA
+            STYLOCHILE
           </div>
         </div>
 
@@ -110,7 +110,7 @@ export default async function OgPrecios() {
               lineHeight: 1,
             }}
           >
-            {monthlyPrice.toLocaleString("es-CU")}
+            {monthlyPrice.toLocaleString("es-CL")}
           </span>
           <span
             style={{

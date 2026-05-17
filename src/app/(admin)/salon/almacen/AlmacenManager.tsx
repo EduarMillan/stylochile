@@ -36,7 +36,7 @@ import {
   type MovementActionState,
 } from "./actions";
 
-const CURRENCIES = ["CUP", "MLC", "USD", "EUR"];
+const CURRENCIES = ["CLP", "USD", "EUR"];
 const COMMON_UNITS = ["u", "ml", "g", "kg", "L"];
 
 export function AlmacenManager({ items }: { items: InventoryItem[] }) {
@@ -267,7 +267,7 @@ function ItemRow({ item }: { item: InventoryItem }) {
 function ItemDialog({ initial }: { initial?: InventoryItem }) {
   const [open, setOpen] = useState(false);
   const [unit, setUnit] = useState(initial?.unit ?? "u");
-  const [currency, setCurrency] = useState(initial?.currency ?? "CUP");
+  const [currency, setCurrency] = useState(initial?.currency ?? "CLP");
   const [state, action, pending] = useActionState<ItemActionState, FormData>(
     saveItemAction,
     null,
@@ -402,7 +402,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
               </Label>
               <Select
                 value={currency}
-                onValueChange={(v) => setCurrency(v ?? "CUP")}
+                onValueChange={(v) => setCurrency(v ?? "CLP")}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -425,7 +425,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
             <Input
               name="supplier"
               defaultValue={initial?.supplier ?? ""}
-              placeholder="Ej. Distribuidora Habana"
+              placeholder="Ej. Distribuidora Santiago"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -624,7 +624,7 @@ function HistoryDialog({ item }: { item: InventoryItem }) {
                     </p>
                   )}
                   <p className="mt-1 text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                    {new Date(m.created_at).toLocaleString("es-CU", {
+                    {new Date(m.created_at).toLocaleString("es-CL", {
                       day: "numeric",
                       month: "short",
                       year: "numeric",
@@ -654,7 +654,7 @@ function HistoryDialog({ item }: { item: InventoryItem }) {
 }
 
 function formatNumber(n: number): string {
-  return Number(n).toLocaleString("es-CU", {
+  return Number(n).toLocaleString("es-CL", {
     maximumFractionDigits: 2,
   });
 }

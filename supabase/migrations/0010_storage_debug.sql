@@ -1,5 +1,5 @@
 -- ============================================
--- StyloCuba — Migración 0010
+-- StyloChile — Migración 0010
 -- Debug: Políticas mínimas para identificar el problema
 -- ============================================
 

@@ -65,7 +65,7 @@ export default function Home() {
           <p
             className="text-xs font-bold uppercase tracking-[0.25em] text-primary drop-shadow animate-in fade-in slide-in-from-bottom-2 duration-700 delay-150"
           >
-            Plataforma de salones de belleza · Cuba
+            Plataforma de salones de belleza · Chile
           </p>
 
           <h1
@@ -81,7 +81,7 @@ export default function Home() {
           >
             Vitrina pública, agenda con aprobación, historial fotográfico de
             clientes y gestión de almacén. Diseñado para los mejores salones de
-            Cuba.
+            Chile.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-3 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-[400ms] sm:gap-4">
@@ -136,7 +136,7 @@ export default function Home() {
       </section>
 
       <footer className="relative border-t border-border/40 px-4 py-5 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground sm:px-8 sm:text-left lg:px-16">
-        © 2026 StyloCuba · Todos los derechos reservados
+        © 2026 StyloChile · Todos los derechos reservados
       </footer>
     </main>
   );

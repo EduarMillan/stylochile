@@ -97,7 +97,7 @@ export default async function AdminUsersPage() {
                         <span className="text-[10px] font-bold uppercase tracking-[0.15em]">
                           Registrado:
                         </span>{" "}
-                        {new Date(p.created_at).toLocaleDateString("es-CU", {
+                        {new Date(p.created_at).toLocaleDateString("es-CL", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

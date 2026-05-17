@@ -87,7 +87,7 @@ function ReviewRow({ review }: { review: AdminReviewRow }) {
             <span className="text-[10px] font-bold uppercase tracking-[0.15em]">
               Fecha:
             </span>{" "}
-            {new Date(review.created_at).toLocaleDateString("es-CU", {
+            {new Date(review.created_at).toLocaleDateString("es-CL", {
               day: "numeric",
               month: "short",
               year: "numeric",

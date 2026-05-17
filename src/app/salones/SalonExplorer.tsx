@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { composeAddress } from "@/lib/cuba";
+import { composeAddress } from "@/lib/chile";
 import { mapsLink } from "@/components/MapEmbed";
 import { getOpenStatus, type OpenStatus } from "@/lib/hours";
 import type { WeeklyHours } from "@/lib/types";
@@ -26,8 +26,6 @@ export type SalonCard = {
   reparto: string | null;
   calle: string | null;
   numero: string | null;
-  entreCalleA: string | null;
-  entreCalleB: string | null;
   logoUrl: string | null;
   hours: WeeklyHours | null;
   areas: string[];
@@ -87,7 +85,7 @@ export function SalonExplorer({
         </div>
         <div>
           <label className="mb-2 block text-xs uppercase tracking-[0.15em] text-muted-foreground">
-            Provincia
+            Región
           </label>
           <div className="flex items-center gap-2">
             <Select
@@ -109,7 +107,7 @@ export function SalonExplorer({
               <button
                 type="button"
                 onClick={() => setProvincia("")}
-                aria-label="Limpiar filtro de provincia"
+                aria-label="Limpiar filtro de región"
                 className="size-9 rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
               >
                 ×
@@ -166,8 +164,6 @@ function Card({ card, now }: { card: SalonCard; now: Date | null }) {
           composeAddress({
             calle: card.calle,
             numero: card.numero,
-            entre_calle_a: card.entreCalleA,
-            entre_calle_b: card.entreCalleB,
             reparto: card.reparto,
             municipio: card.municipio,
             provincia: card.provincia,

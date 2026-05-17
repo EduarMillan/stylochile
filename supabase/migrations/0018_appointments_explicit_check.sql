@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0018
+-- StyloChile — Migración 0018
 -- Hace explícito el check de suspended_at en la policy de INSERT de
 -- appointments. Antes dependía solo del filtro RLS del SELECT de salons
 -- (que excluye suspendidos para anon), lo que generaba ambigüedad: un

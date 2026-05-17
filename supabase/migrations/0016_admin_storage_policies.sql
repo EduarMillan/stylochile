@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0016
+-- StyloChile — Migración 0016
 -- Permite al super-admin (is_app_admin()) leer y borrar archivos del bucket
 -- salon-media. Necesario para limpiar Storage cuando se elimina un salón
 -- completo desde /admin/salones — las policies de dueño no aplican porque

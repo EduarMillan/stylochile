@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
-import { CUBA_PROVINCIAS } from "@/lib/cuba";
+import { CHILE_REGIONES } from "@/lib/chile";
 import { PublicHeader } from "@/components/PublicHeader";
 import type { WeeklyHours } from "@/lib/types";
 import { SalonExplorer, type SalonCard } from "./SalonExplorer";
@@ -9,11 +9,11 @@ import { SalonExplorer, type SalonCard } from "./SalonExplorer";
 export const metadata: Metadata = {
   title: "Directorio de salones",
   description:
-    "Descubre los mejores salones de belleza de Cuba. Filtra por provincia, ve fotos, horarios y reserva en segundos.",
+    "Descubre los mejores salones de belleza de Chile. Filtra por región, ve fotos, horarios y reserva en segundos.",
   openGraph: {
-    title: "Directorio de salones · StyloCuba",
+    title: "Directorio de salones · StyloChile",
     description:
-      "Descubre los mejores salones de belleza de Cuba. Filtra por provincia, ve fotos, horarios y reserva en segundos.",
+      "Descubre los mejores salones de belleza de Chile. Filtra por región, ve fotos, horarios y reserva en segundos.",
     url: "/salones",
   },
 };
@@ -24,7 +24,7 @@ export default async function ExplorerPage() {
   const { data: salonRows } = await supabase
     .from("salons")
     .select(
-      "id, slug, name, description, provincia, municipio, reparto, calle, numero, entre_calle_a, entre_calle_b, logo_url, hours",
+      "id, slug, name, description, provincia, municipio, reparto, calle, numero, logo_url, hours",
     )
     .eq("is_published", true)
     .order("created_at", { ascending: false });
@@ -39,8 +39,6 @@ export default async function ExplorerPage() {
     reparto: string | null;
     calle: string | null;
     numero: string | null;
-    entre_calle_a: string | null;
-    entre_calle_b: string | null;
     logo_url: string | null;
     hours: WeeklyHours | null;
   }>;
@@ -86,8 +84,6 @@ export default async function ExplorerPage() {
         reparto: s.reparto,
         calle: s.calle,
         numero: s.numero,
-        entreCalleA: s.entre_calle_a,
-        entreCalleB: s.entre_calle_b,
         logoUrl: s.logo_url,
         hours: s.hours,
         areas: areasBy.get(s.id) ?? [],
@@ -127,11 +123,11 @@ export default async function ExplorerPage() {
             Directorio
           </p>
           <h1 className="mt-3 font-serif text-4xl tracking-tight text-gold-gradient drop-shadow-lg sm:text-5xl lg:text-7xl">
-            Salones de Cuba
+            Salones de Chile
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-foreground/85 drop-shadow">
             Descubre los mejores salones de belleza del país. Filtra por
-            provincia y reserva en segundos.
+            región y reserva en segundos.
           </p>
         </section>
       </div>
@@ -139,12 +135,12 @@ export default async function ExplorerPage() {
       <section className="px-4 pb-16 sm:px-8 sm:pb-20 lg:px-16 lg:pb-24">
         <SalonExplorer
           cards={cards}
-          provincias={CUBA_PROVINCIAS}
+          provincias={CHILE_REGIONES}
         />
       </section>
 
       <footer className="border-t border-border/60 px-4 py-6 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground sm:px-8 lg:px-16 lg:py-8">
-        © 2026 StyloCuba · Todos los derechos reservados
+        © 2026 StyloChile · Todos los derechos reservados
       </footer>
     </div>
   );

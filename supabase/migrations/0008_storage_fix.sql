@@ -1,5 +1,5 @@
 -- ============================================
--- StyloCuba — Migración 0008
+-- StyloChile — Migración 0008
 -- Fix: Corregir políticas de Storage (índice [1]→[0])
 -- Error: 400 al subir imágenes - bucket_id no validaba correctamente
 -- ============================================

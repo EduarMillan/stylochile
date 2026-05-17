@@ -27,7 +27,7 @@ imagen de fondo del hero.
 
 1. Descarga la imagen.
 2. Renómbrala a `hero-bg.jpg`.
-3. Ponla en esta carpeta (`stylocuba-app/public/`).
+3. Ponla en esta carpeta (`stylochile-app/public/`).
 4. Recarga la página — `next/image` la sirve y optimiza automáticamente.
 
 Si prefieres `.webp` o `.png`, cambia la extensión en `src/app/page.tsx` y

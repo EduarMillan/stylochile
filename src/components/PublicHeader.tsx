@@ -52,7 +52,7 @@ export function PublicHeader({
           href="/"
           className="font-serif text-2xl tracking-tight text-gold-gradient"
         >
-          STYLOCUBA
+          STYLOCHILE
         </Link>
 
         {/* Nav desktop — visible desde sm+ */}
@@ -100,7 +100,7 @@ export function PublicHeader({
                 onClick={() => setOpen(false)}
                 className="font-serif text-xl tracking-tight text-gold-gradient"
               >
-                STYLOCUBA
+                STYLOCHILE
               </Link>
               <button
                 type="button"

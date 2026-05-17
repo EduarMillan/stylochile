@@ -30,7 +30,7 @@ export default function ErrorPage({
           href="/"
           className="font-serif text-2xl tracking-tight text-gold-gradient"
         >
-          STYLOCUBA
+          STYLOCHILE
         </Link>
       </header>
 

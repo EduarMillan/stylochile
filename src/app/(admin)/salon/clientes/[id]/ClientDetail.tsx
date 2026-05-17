@@ -261,7 +261,7 @@ function PhotoCard({
   }
 
   const date = new Date(photo.taken_at + "T00:00:00").toLocaleDateString(
-    "es-CU",
+    "es-CL",
     { day: "numeric", month: "long", year: "numeric" },
   );
 

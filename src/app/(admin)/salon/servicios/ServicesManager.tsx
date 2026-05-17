@@ -35,7 +35,7 @@ import {
   type ServiceActionState,
 } from "./actions";
 
-const CURRENCIES = ["CUP", "MLC", "USD", "EUR"];
+const CURRENCIES = ["CLP", "USD", "EUR"];
 
 // Paleta para identificar visualmente cada área. El servicio hereda el color
 // de su área según el índice en la lista. Si no hay área asignada, se usa
@@ -215,7 +215,7 @@ function ServiceCard({
             className="whitespace-nowrap text-sm font-semibold"
             style={{ color: `rgb(${rgb})` }}
           >
-            {service.price.toLocaleString("es-CU")} {service.currency}
+            {service.price.toLocaleString("es-CL")} {service.currency}
           </span>
         )}
       </div>
@@ -272,7 +272,7 @@ function ServiceDialog({
   const [areaId, setAreaId] = useState<string>(
     initial?.area_id ?? (areas[0]?.id ?? "none"),
   );
-  const [currency, setCurrency] = useState(initial?.currency ?? "CUP");
+  const [currency, setCurrency] = useState(initial?.currency ?? "CLP");
   const [state, action, pending] = useActionState<ServiceActionState, FormData>(
     saveServiceAction,
     null,
@@ -386,7 +386,7 @@ function ServiceDialog({
               <Label className="text-xs uppercase tracking-[0.15em]">
                 Moneda
               </Label>
-              <Select value={currency} onValueChange={(v) => setCurrency(v ?? "CUP")}>
+              <Select value={currency} onValueChange={(v) => setCurrency(v ?? "CLP")}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

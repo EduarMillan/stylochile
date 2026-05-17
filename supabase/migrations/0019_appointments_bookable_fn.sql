@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0019
+-- StyloChile — Migración 0019
 -- Reemplaza el inner SELECT del WITH CHECK de appointments_public_insert
 -- por una función SECURITY DEFINER. Esto hace que el chequeo NO dependa
 -- de RLS de salons (que puede tener ediciones manuales o variantes), y

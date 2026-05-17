@@ -125,7 +125,7 @@ export function ReviewForm({
             required
             type="tel"
             autoComplete="tel"
-            placeholder="+53 5 123 4567"
+            placeholder="+56 9 1234 5678"
           />
           <p className="text-xs text-muted-foreground">
             Solo verificamos que tuviste una cita en este salón. No mostramos

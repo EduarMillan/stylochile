@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Schema inicial
+-- StyloChile — Schema inicial
 -- Pegar en el SQL Editor de Supabase y ejecutar.
 -- ============================================================================
 
@@ -137,7 +137,7 @@ create table public.services (
   name text not null,
   description text,
   price numeric(10, 2),
-  currency text not null default 'CUP',
+  currency text not null default 'CLP',
   duration_minutes int,
   sort_order int not null default 0,
   created_at timestamptz not null default now()
@@ -344,7 +344,7 @@ create table public.inventory_items (
   quantity numeric(12, 2) not null default 0,
   min_quantity numeric(12, 2) not null default 0,
   unit_cost numeric(12, 2),
-  currency text not null default 'CUP',
+  currency text not null default 'CLP',
   supplier text,
   notes text,
   created_at timestamptz not null default now(),
@@ -578,8 +578,8 @@ create table public.platform_settings (
   id boolean primary key default true check (id = true),
   trial_days integer not null default 90 check (trial_days >= 1 and trial_days <= 365),
   grace_period_days integer not null default 5 check (grace_period_days >= 0 and grace_period_days <= 30),
-  monthly_price numeric(12, 2) not null default 1000 check (monthly_price >= 0),
-  currency text not null default 'CUP',
+  monthly_price numeric(12, 2) not null default 9990 check (monthly_price >= 0),
+  currency text not null default 'CLP',
   admin_whatsapp text,
   updated_at timestamptz not null default now()
 );

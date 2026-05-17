@@ -37,7 +37,7 @@ export default function NotFound() {
       </main>
 
       <footer className="border-t border-border/60 px-4 py-6 text-center text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground sm:px-8 lg:px-16 lg:py-8">
-        © 2026 StyloCuba
+        © 2026 StyloChile
       </footer>
     </div>
   );

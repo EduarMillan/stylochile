@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0005 (Fase 4)
+-- StyloChile — Migración 0005 (Fase 4)
 -- Almacén / inventario : items + movimientos + RPC atómico.
 -- ============================================================================
 
@@ -12,7 +12,7 @@ create table public.inventory_items (
   quantity numeric(12, 2) not null default 0,
   min_quantity numeric(12, 2) not null default 0,
   unit_cost numeric(12, 2),
-  currency text not null default 'CUP',
+  currency text not null default 'CLP',
   supplier text,
   notes text,
   created_at timestamptz not null default now(),

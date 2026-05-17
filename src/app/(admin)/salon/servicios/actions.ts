@@ -13,7 +13,7 @@ const ServiceSchema = z.object({
     .union([z.string().length(0), z.coerce.number().min(0)])
     .nullable()
     .optional(),
-  currency: z.string().min(1).max(8).default("CUP"),
+  currency: z.string().min(1).max(8).default("CLP"),
   duration_minutes: z
     .union([z.string().length(0), z.coerce.number().int().min(1).max(720)])
     .nullable()
@@ -66,7 +66,7 @@ export async function saveServiceAction(
     name: pickString(formData.get("name")),
     description: pickString(formData.get("description")),
     price: pickNumber(formData.get("price")),
-    currency: pickString(formData.get("currency")) || "CUP",
+    currency: pickString(formData.get("currency")) || "CLP",
     duration_minutes: pickNumber(formData.get("duration_minutes")),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };

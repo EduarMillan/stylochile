@@ -1,5 +1,5 @@
 -- ============================================
--- StyloCuba — Migración 0011
+-- StyloChile — Migración 0011
 -- Fix: Políticas de Storage con ownership correcto
 -- ============================================
 

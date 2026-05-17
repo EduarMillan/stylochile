@@ -9,7 +9,7 @@ import type { MetadataRoute } from "next";
  * no aportan SEO.
  */
 const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stylocuba.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://stylochile.vercel.app";
 
 export default function robots(): MetadataRoute.Robots {
   return {

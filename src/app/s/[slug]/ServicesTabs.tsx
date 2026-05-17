@@ -144,7 +144,7 @@ function ServicePanel({ group }: { group: Group }) {
                     className="whitespace-nowrap font-medium"
                     style={{ color: `rgb(${r}, ${g}, ${b})` }}
                   >
-                    {s.price.toLocaleString("es-CU")} {s.currency}
+                    {s.price.toLocaleString("es-CL")} {s.currency}
                   </span>
                 )}
               </div>

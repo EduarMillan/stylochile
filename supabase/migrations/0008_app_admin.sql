@@ -1,5 +1,5 @@
 -- ============================================================================
--- StyloCuba — Migración 0008 (Fase 7)
+-- StyloChile — Migración 0008 (Fase 7)
 -- Panel super-admin para eduarmillan00@gmail.com.
 -- Idempotente: se puede correr de nuevo sin errores.
 -- Tolerante a estado parcial: solo aplica policies a tablas que existan.

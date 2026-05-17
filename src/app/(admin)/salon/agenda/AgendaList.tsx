@@ -285,14 +285,14 @@ function AppointmentRow({
       {/* Hora */}
       <div>
         <p className="font-serif text-2xl">
-          {start.toLocaleTimeString("es-CU", {
+          {start.toLocaleTimeString("es-CL", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
           })}
         </p>
         <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
-          {start.toLocaleDateString("es-CU", {
+          {start.toLocaleDateString("es-CL", {
             weekday: "short",
             day: "numeric",
             month: "short",
