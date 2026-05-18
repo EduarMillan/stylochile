@@ -29,6 +29,7 @@ import {
   buildApprovalMessage,
   buildRejectionMessage,
 } from "@/lib/whatsapp";
+import { buildChilePhone, digitsOnly } from "@/lib/phone";
 import {
   deleteAppointmentAction,
   setAppointmentStatusAction,
@@ -239,7 +240,12 @@ function AppointmentRow({
     });
   }
 
-  const cleanPhone = appt.client_phone.replace(/\D/g, "");
+  // Normaliza al formato canónico +56XXXXXXXXX. Defensivo para
+  // reservas viejas que pudieron guardarse antes de que el form forzara
+  // el prefijo — así el link de WhatsApp y el display siempre quedan
+  // bien.
+  const normalizedPhone = buildChilePhone(appt.client_phone);
+  const cleanPhone = digitsOnly(normalizedPhone);
   const hasPhone = cleanPhone.length > 0;
   const ctx = {
     salonName,
@@ -317,7 +323,7 @@ function AppointmentRow({
           {appt.area && ` · ${appt.area.name}`}
         </p>
         <p className="mt-1 text-xs uppercase tracking-[0.15em] text-muted-foreground">
-          {appt.client_phone}
+          {normalizedPhone || appt.client_phone}
         </p>
         {appt.client_notes && (
           <p className="mt-2 text-sm italic text-muted-foreground">
