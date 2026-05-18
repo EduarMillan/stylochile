@@ -170,12 +170,13 @@ export async function saveSalonAction(
   } else {
     const { error } = await supabase.from("salons").insert(payload);
     if (error) {
-      return {
-        error:
-          error.code === "23505"
-            ? "Ese identificador (URL) ya está en uso."
-            : error.message,
-      };
+      if (error.code === "23505") {
+        if (error.message.includes("salons_owner_unique")) {
+          return { error: "Ya tienes un salón creado." };
+        }
+        return { error: "Ese identificador (URL) ya está en uso." };
+      }
+      return { error: error.message };
     }
   }
 

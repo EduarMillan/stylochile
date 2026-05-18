@@ -470,12 +470,36 @@ create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email) values (new.id, new.email);
+  insert into public.profiles (id, email, full_name, phone)
+  values (
+    new.id,
+    new.email,
+    new.raw_user_meta_data->>'full_name',
+    new.raw_user_meta_data->>'phone'
+  );
   return new;
 end;
 $$;
 update public.profiles p set email = u.email
   from auth.users u where p.id = u.id and p.email is null;
+
+-- Un dueño solo puede tener un salón, un teléfono solo se registra una vez
+alter table public.salons
+  drop constraint if exists salons_owner_unique;
+alter table public.salons
+  add constraint salons_owner_unique unique (owner_id);
+alter table public.profiles
+  drop constraint if exists profiles_phone_unique;
+alter table public.profiles
+  add constraint profiles_phone_unique unique (phone);
+
+-- RPC anon-safe para pre-chequear teléfono en signup
+create or replace function public.phone_taken(p_phone text)
+returns boolean language sql stable security definer set search_path = public
+as $$
+  select exists (select 1 from public.profiles where phone = p_phone);
+$$;
+grant execute on function public.phone_taken(text) to anon, authenticated;
 
 alter table public.salons add column if not exists suspended_at timestamptz;
 create index if not exists salons_suspended_at_idx

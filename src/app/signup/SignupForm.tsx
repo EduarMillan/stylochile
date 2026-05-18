@@ -49,6 +49,35 @@ export function SignupForm() {
       </div>
 
       <div className="flex flex-col gap-2">
+        <Label htmlFor="phone" className="text-xs uppercase tracking-[0.15em]">
+          Teléfono
+        </Label>
+        <div className="flex items-stretch overflow-hidden rounded-xl border border-input bg-background focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/40">
+          <span className="flex select-none items-center bg-secondary px-3 font-serif text-base text-primary">
+            +56
+          </span>
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9]{9}"
+            minLength={9}
+            maxLength={9}
+            autoComplete="tel"
+            required
+            placeholder="971234567"
+            title="9 dígitos sin código de país"
+            className="flex-1 rounded-none border-0 focus-visible:ring-0"
+          />
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Te lo pedimos para que el admin pueda contactarte si hay algún
+          problema con tu cuenta o pago.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-2">
         <Label
           htmlFor="password"
           className="text-xs uppercase tracking-[0.15em]"
