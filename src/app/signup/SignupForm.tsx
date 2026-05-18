@@ -19,7 +19,7 @@ export function SignupForm() {
           htmlFor="full_name"
           className="text-xs uppercase tracking-[0.15em]"
         >
-          Nombre completo
+          Tu nombre completo
         </Label>
         <Input
           id="full_name"
@@ -28,6 +28,10 @@ export function SignupForm() {
           autoComplete="name"
           required
         />
+        <p className="text-xs text-muted-foreground">
+          Tu nombre, no el del salón. El nombre del salón lo configuras
+          después.
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">
