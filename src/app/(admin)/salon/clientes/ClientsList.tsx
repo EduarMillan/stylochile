@@ -133,7 +133,21 @@ function NewClientDialog() {
               >
                 Teléfono
               </Label>
-              <Input id="cli-phone" name="phone" type="tel" />
+              <div className="flex items-stretch overflow-hidden rounded-xl border border-input bg-background focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/40">
+                <span className="flex select-none items-center bg-secondary px-3 font-serif text-base text-primary">
+                  +56
+                </span>
+                <Input
+                  id="cli-phone"
+                  name="phone"
+                  type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={10}
+                  placeholder="971234567"
+                  className="flex-1 rounded-none border-0 focus-visible:ring-0"
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-2">
               <Label

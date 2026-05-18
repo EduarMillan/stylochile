@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { buildChilePhone } from "@/lib/phone";
 import { removeStorageFiles } from "@/lib/storage";
 
 const ClientSchema = z.object({
@@ -40,9 +41,12 @@ export async function createClientAction(
   const salonId = await getSalonId();
   if (!salonId) return { error: "Crea tu salón primero." };
 
+  // El form envía solo los dígitos locales; prependemos +56.
+  const phoneFull = buildChilePhone(formData.get("phone") as string | null);
+
   const parsed = ClientSchema.safeParse({
     name: String(formData.get("name") ?? "").trim(),
-    phone: String(formData.get("phone") ?? "").trim(),
+    phone: phoneFull,
     email: String(formData.get("email") ?? "").trim(),
     notes: String(formData.get("notes") ?? "").trim(),
   });
@@ -75,7 +79,7 @@ export async function updateClientAction(
 
   const parsed = ClientSchema.safeParse({
     name: patch.name,
-    phone: patch.phone ?? "",
+    phone: buildChilePhone(patch.phone),
     email: patch.email ?? "",
     notes: patch.notes ?? "",
   });

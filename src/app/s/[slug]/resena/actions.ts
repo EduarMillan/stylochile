@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { buildChilePhone, digitsOnly } from "@/lib/phone";
 
 const ReviewSchema = z.object({
   salon_slug: z.string().min(1),
@@ -21,10 +22,15 @@ export async function submitReviewAction(
   _prev: ReviewState,
   formData: FormData,
 ): Promise<ReviewState> {
+  // El form envía solo los dígitos locales; prependemos +56.
+  const clientPhone = buildChilePhone(
+    formData.get("client_phone") as string | null,
+  );
+
   const parsed = ReviewSchema.safeParse({
     salon_slug: formData.get("salon_slug"),
     client_name: String(formData.get("client_name") ?? "").trim(),
-    client_phone: String(formData.get("client_phone") ?? "").trim(),
+    client_phone: clientPhone,
     rating: formData.get("rating") ?? 0,
     comment: String(formData.get("comment") ?? "").trim(),
   });
@@ -45,7 +51,7 @@ export async function submitReviewAction(
   }
 
   // Verifica que el teléfono pertenece a una cita aprobada/completada
-  const phoneFull = data.client_phone.replace(/\D/g, "");
+  const phoneFull = digitsOnly(data.client_phone);
   const { data: canReview, error: rpcError } = await supabase.rpc(
     "can_review_salon",
     { p_salon_id: salon.id, p_phone: phoneFull },

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/slug";
 import { CHILE_COMUNAS } from "@/lib/chile";
+import { buildChilePhone } from "@/lib/phone";
 import { DEFAULT_HOURS, type WeeklyHours } from "@/lib/types";
 import { removeStorageFiles } from "@/lib/storage";
 
@@ -52,10 +53,6 @@ export type SaveSalonState = {
   success?: string;
 } | null;
 
-function digitsOnly(v: FormDataEntryValue | null): string {
-  return String(v ?? "").replace(/\D/g, "");
-}
-
 export async function saveSalonAction(
   _prev: SaveSalonState,
   formData: FormData,
@@ -70,9 +67,10 @@ export async function saveSalonAction(
     }
   }
 
-  // WhatsApp: el form envía el número internacional completo en dígitos
-  // (código de país incluido). Lo guardamos tal cual.
-  const whatsappFull = digitsOnly(formData.get("whatsapp"));
+  // El form envía solo los dígitos locales (9 para móvil chileno).
+  // Prependemos +56 para guardar el formato canónico internacional.
+  const phoneFull = buildChilePhone(formData.get("phone") as string | null);
+  const whatsappFull = buildChilePhone(formData.get("whatsapp") as string | null);
 
   const provincia = String(formData.get("provincia") ?? "").trim();
   const municipio = String(formData.get("municipio") ?? "").trim();
@@ -97,7 +95,7 @@ export async function saveSalonAction(
     reparto: String(formData.get("reparto") ?? "").trim(),
     municipio,
     provincia,
-    phone: String(formData.get("phone") ?? "").trim(),
+    phone: phoneFull,
     whatsapp: whatsappFull,
     logo_url: String(formData.get("logo_url") ?? "").trim(),
     hours,

@@ -620,14 +620,23 @@ function StepData({
             >
               Teléfono / WhatsApp
             </Label>
-            <Input
-              id="client_phone"
-              name="client_phone"
-              required
-              type="tel"
-              autoComplete="tel"
-              placeholder="+56 9 1234 5678"
-            />
+            <div className="flex items-stretch overflow-hidden rounded-xl border border-input bg-background focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/40">
+              <span className="flex select-none items-center bg-secondary px-3 font-serif text-base text-primary">
+                +56
+              </span>
+              <Input
+                id="client_phone"
+                name="client_phone"
+                required
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={10}
+                autoComplete="tel"
+                placeholder="971234567"
+                className="flex-1 rounded-none border-0 focus-visible:ring-0"
+              />
+            </div>
           </div>
         </div>
 

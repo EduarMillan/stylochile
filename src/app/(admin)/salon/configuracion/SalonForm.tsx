@@ -17,15 +17,10 @@ import {
 import { DEFAULT_HOURS, type Salon, type WeeklyHours } from "@/lib/types";
 import { slugify } from "@/lib/slug";
 import { CHILE_COMUNAS, CHILE_REGIONES } from "@/lib/chile";
+import { stripChilePrefix } from "@/lib/phone";
 import { ImageUpload } from "@/components/ImageUpload";
 import { saveSalonAction, type SaveSalonState } from "./actions";
 import { HoursEditor } from "./HoursEditor";
-
-// Normaliza el WhatsApp guardado a solo dígitos para mostrarlo.
-function digitsOnly(stored: string | null): string {
-  if (!stored) return "";
-  return stored.replace(/\D/g, "");
-}
 
 export function SalonForm({ salon }: { salon: Salon | null }) {
   const [state, action, pending] = useActionState<SaveSalonState, FormData>(
@@ -135,33 +130,22 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
       <Section
         label="Contacto"
         title="Cómo te contactan"
-        description="El WhatsApp se usa para recibir las solicitudes de reserva. Escribe el número con código de país, sin espacios ni símbolos (ej. 56971234567)."
+        description="El WhatsApp se usa para recibir las solicitudes de reserva. Escribe solo los 9 dígitos sin código de país; el +56 se agrega automáticamente."
       >
         <FieldGroup>
           <Field label="Teléfono fijo (opcional)">
-            <Input
+            <ChilePhoneInput
               name="phone"
-              type="tel"
-              defaultValue={salon?.phone ?? ""}
-              placeholder="22 123 4567"
+              defaultValue={salon?.phone}
+              placeholder="221234567"
             />
           </Field>
           <Field label="WhatsApp">
-            <div className="flex items-stretch overflow-hidden rounded-xl border border-input bg-background focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/40">
-              <span className="flex select-none items-center bg-secondary px-4 font-serif text-base text-primary">
-                +
-              </span>
-              <Input
-                name="whatsapp"
-                type="tel"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                maxLength={15}
-                defaultValue={digitsOnly(salon?.whatsapp ?? null)}
-                placeholder="56971234567"
-                className="flex-1 rounded-none border-0 focus-visible:ring-0"
-              />
-            </div>
+            <ChilePhoneInput
+              name="whatsapp"
+              defaultValue={salon?.whatsapp}
+              placeholder="971234567"
+            />
           </Field>
         </FieldGroup>
       </Section>
@@ -382,6 +366,37 @@ function Field({
       <Label className="text-xs uppercase tracking-[0.15em]">{label}</Label>
       {children}
       {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+    </div>
+  );
+}
+
+function ChilePhoneInput({
+  name,
+  defaultValue,
+  placeholder,
+  required,
+}: {
+  name: string;
+  defaultValue?: string | null;
+  placeholder?: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="flex items-stretch overflow-hidden rounded-xl border border-input bg-background focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/40">
+      <span className="flex select-none items-center bg-secondary px-3 font-serif text-base text-primary">
+        +56
+      </span>
+      <Input
+        name={name}
+        type="tel"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        maxLength={10}
+        required={required}
+        defaultValue={stripChilePrefix(defaultValue ?? null)}
+        placeholder={placeholder}
+        className="flex-1 rounded-none border-0 focus-visible:ring-0"
+      />
     </div>
   );
 }

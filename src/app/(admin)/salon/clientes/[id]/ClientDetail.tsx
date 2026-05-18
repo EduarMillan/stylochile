@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ImageUpload } from "@/components/ImageUpload";
+import { stripChilePrefix } from "@/lib/phone";
 import type { Client, ClientProgressPhoto } from "@/lib/types";
 import {
   deleteClientAction,
@@ -61,7 +62,7 @@ function ClientCard({
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(client.name);
-  const [phone, setPhone] = useState(client.phone ?? "");
+  const [phone, setPhone] = useState(stripChilePrefix(client.phone));
   const [email, setEmail] = useState(client.email ?? "");
   const [notes, setNotes] = useState(client.notes ?? "");
   const [pending, startTransition] = useTransition();
@@ -159,11 +160,21 @@ function ClientCard({
         </div>
         <div className="flex flex-col gap-2">
           <Label className="text-xs uppercase tracking-[0.15em]">Teléfono</Label>
-          <Input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            type="tel"
-          />
+          <div className="flex items-stretch overflow-hidden rounded-xl border border-input bg-background focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/40">
+            <span className="flex select-none items-center bg-secondary px-3 font-serif text-base text-primary">
+              +56
+            </span>
+            <Input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+              type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={10}
+              placeholder="971234567"
+              className="flex-1 rounded-none border-0 focus-visible:ring-0"
+            />
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <Label className="text-xs uppercase tracking-[0.15em]">Email</Label>
@@ -191,7 +202,7 @@ function ClientCard({
           onClick={() => {
             setEditing(false);
             setName(client.name);
-            setPhone(client.phone ?? "");
+            setPhone(stripChilePrefix(client.phone));
             setEmail(client.email ?? "");
             setNotes(client.notes ?? "");
           }}
