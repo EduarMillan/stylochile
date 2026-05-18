@@ -59,6 +59,7 @@ create table public.salons (
   cover_image text,
   logo_url text,
   is_published boolean not null default false,
+  suspended_at timestamptz,        -- null = activo; timestamp = suspendido por admin o auto
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
