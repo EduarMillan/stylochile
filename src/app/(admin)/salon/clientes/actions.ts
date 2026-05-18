@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { buildChilePhone } from "@/lib/phone";
+import { buildChilePhone, validateChilePhone } from "@/lib/phone";
 import { removeStorageFiles } from "@/lib/storage";
 
 const ClientSchema = z.object({
@@ -41,8 +41,13 @@ export async function createClientAction(
   const salonId = await getSalonId();
   if (!salonId) return { error: "Crea tu salón primero." };
 
-  // El form envía solo los dígitos locales; prependemos +56.
-  const phoneFull = buildChilePhone(formData.get("phone") as string | null);
+  // El form envía solo los dígitos locales; validamos y prependemos +56.
+  // Teléfono opcional para clientes — la mayoría se registra con uno
+  // pero algunos walk-ins no lo dejan.
+  const rawPhone = formData.get("phone") as string | null;
+  const phoneCheck = validateChilePhone(rawPhone, { allowEmpty: true });
+  if (!phoneCheck.ok) return { error: phoneCheck.error };
+  const phoneFull = buildChilePhone(rawPhone);
 
   const parsed = ClientSchema.safeParse({
     name: String(formData.get("name") ?? "").trim(),
@@ -76,6 +81,9 @@ export async function updateClientAction(
 ): Promise<ClientActionState> {
   const salonId = await getSalonId();
   if (!salonId) return { error: "Sin salón." };
+
+  const phoneCheck = validateChilePhone(patch.phone, { allowEmpty: true });
+  if (!phoneCheck.ok) return { error: phoneCheck.error };
 
   const parsed = ClientSchema.safeParse({
     name: patch.name,

@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { buildChilePhone } from "@/lib/phone";
+import { buildChilePhone, validateChilePhone } from "@/lib/phone";
 
 const ReservationSchema = z.object({
   salon_id: z.string().uuid(),
@@ -26,10 +26,12 @@ export async function reserveAction(
   _prev: ReserveState,
   formData: FormData,
 ): Promise<ReserveState> {
-  // El form envía solo los dígitos locales; prependemos +56.
-  const clientPhone = buildChilePhone(
-    formData.get("client_phone") as string | null,
-  );
+  // El form envía solo los dígitos locales (9 para móvil chileno).
+  // Validamos y luego prependemos +56 antes de guardar.
+  const rawPhone = formData.get("client_phone") as string | null;
+  const phoneCheck = validateChilePhone(rawPhone);
+  if (!phoneCheck.ok) return { error: phoneCheck.error };
+  const clientPhone = buildChilePhone(rawPhone);
 
   const parsed = ReservationSchema.safeParse({
     salon_id: formData.get("salon_id"),

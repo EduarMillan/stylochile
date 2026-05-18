@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { buildChilePhone, digitsOnly } from "@/lib/phone";
+import { buildChilePhone, digitsOnly, validateChilePhone } from "@/lib/phone";
 
 const ReviewSchema = z.object({
   salon_slug: z.string().min(1),
@@ -22,10 +22,11 @@ export async function submitReviewAction(
   _prev: ReviewState,
   formData: FormData,
 ): Promise<ReviewState> {
-  // El form envía solo los dígitos locales; prependemos +56.
-  const clientPhone = buildChilePhone(
-    formData.get("client_phone") as string | null,
-  );
+  // El form envía solo los dígitos locales; validamos y prependemos +56.
+  const rawPhone = formData.get("client_phone") as string | null;
+  const phoneCheck = validateChilePhone(rawPhone);
+  if (!phoneCheck.ok) return { error: phoneCheck.error };
+  const clientPhone = buildChilePhone(rawPhone);
 
   const parsed = ReviewSchema.safeParse({
     salon_slug: formData.get("salon_slug"),

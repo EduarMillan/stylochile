@@ -6,7 +6,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/slug";
 import { CHILE_COMUNAS } from "@/lib/chile";
-import { buildChilePhone } from "@/lib/phone";
+import { buildChilePhone, validateChilePhone } from "@/lib/phone";
 import { DEFAULT_HOURS, type WeeklyHours } from "@/lib/types";
 import { removeStorageFiles } from "@/lib/storage";
 
@@ -68,9 +68,15 @@ export async function saveSalonAction(
   }
 
   // El form envía solo los dígitos locales (9 para móvil chileno).
-  // Prependemos +56 para guardar el formato canónico internacional.
-  const phoneFull = buildChilePhone(formData.get("phone") as string | null);
-  const whatsappFull = buildChilePhone(formData.get("whatsapp") as string | null);
+  // Validamos y prependemos +56 para guardar el formato canónico.
+  const phoneRaw = formData.get("phone") as string | null;
+  const whatsappRaw = formData.get("whatsapp") as string | null;
+  const phoneCheck = validateChilePhone(phoneRaw, { allowEmpty: true });
+  if (!phoneCheck.ok) return { error: `Teléfono fijo: ${phoneCheck.error}` };
+  const whatsappCheck = validateChilePhone(whatsappRaw, { allowEmpty: true });
+  if (!whatsappCheck.ok) return { error: `WhatsApp: ${whatsappCheck.error}` };
+  const phoneFull = buildChilePhone(phoneRaw);
+  const whatsappFull = buildChilePhone(whatsappRaw);
 
   const provincia = String(formData.get("provincia") ?? "").trim();
   const municipio = String(formData.get("municipio") ?? "").trim();

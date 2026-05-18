@@ -169,9 +169,11 @@ function ClientCard({
               onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
               type="tel"
               inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={10}
+              pattern="[0-9]{9}"
+              minLength={9}
+              maxLength={9}
               placeholder="971234567"
+              title="9 dígitos sin código de país"
               className="flex-1 rounded-none border-0 focus-visible:ring-0"
             />
           </div>

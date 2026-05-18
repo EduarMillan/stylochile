@@ -390,11 +390,13 @@ function ChilePhoneInput({
         name={name}
         type="tel"
         inputMode="numeric"
-        pattern="[0-9]*"
-        maxLength={10}
+        pattern="[0-9]{9}"
+        minLength={9}
+        maxLength={9}
         required={required}
         defaultValue={stripChilePrefix(defaultValue ?? null)}
         placeholder={placeholder}
+        title="9 dígitos sin código de país"
         className="flex-1 rounded-none border-0 focus-visible:ring-0"
       />
     </div>
