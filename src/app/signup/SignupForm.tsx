@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/PasswordInput";
 import { signupAction, type AuthState } from "./actions";
 
 export function SignupForm() {
@@ -54,10 +55,9 @@ export function SignupForm() {
         >
           Contraseña
         </Label>
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="new-password"
           minLength={8}
           required

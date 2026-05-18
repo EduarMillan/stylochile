@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/PasswordInput";
 import { loginAction, type AuthState } from "./actions";
 
 export function LoginForm({ next }: { next?: string }) {
@@ -45,10 +46,9 @@ export function LoginForm({ next }: { next?: string }) {
             ¿Olvidaste tu contraseña?
           </Link>
         </div>
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="current-password"
           required
         />
