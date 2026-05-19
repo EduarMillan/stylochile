@@ -384,18 +384,18 @@ export const CHILE_REGIONES = Object.keys(CHILE_COMUNAS);
 /**
  * Compone una dirección legible en una sola línea a partir de los
  * campos estructurados. Útil para vitrina pública y queries de Google
- * Maps. En Chile no se usa el patrón "e/ calle A y B" cubano, así que
- * solo se respetan calle/número/sector/comuna/región si están presentes.
+ * Maps. Solo se respetan calle/número/sector/comuna/región si están
+ * presentes.
  */
 export function composeAddress(parts: {
   calle?: string | null;
   numero?: string | null;
-  reparto?: string | null;
-  municipio?: string | null;
-  provincia?: string | null;
+  sector?: string | null;
+  comuna?: string | null;
+  region?: string | null;
 }): string {
   const street = [parts.calle, parts.numero].filter(Boolean).join(" ").trim();
-  const right = [parts.reparto, parts.municipio, parts.provincia]
+  const right = [parts.sector, parts.comuna, parts.region]
     .filter(Boolean)
     .join(", ");
   return [street, right, "Chile"].filter(Boolean).join(", ");

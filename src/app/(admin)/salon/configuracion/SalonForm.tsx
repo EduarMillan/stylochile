@@ -36,9 +36,9 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
   );
   const [isPublished, setIsPublished] = useState(salon?.is_published ?? false);
 
-  const [provincia, setProvincia] = useState<string>(salon?.provincia ?? "");
-  const [municipio, setMunicipio] = useState<string>(salon?.municipio ?? "");
-  const municipios = provincia ? (CHILE_COMUNAS[provincia] ?? []) : [];
+  const [region, setRegion] = useState<string>(salon?.region ?? "");
+  const [comuna, setComuna] = useState<string>(salon?.comuna ?? "");
+  const comunas = region ? (CHILE_COMUNAS[region] ?? []) : [];
 
   const [logoUrl, setLogoUrl] = useState<string | null>(salon?.logo_url ?? null);
 
@@ -54,8 +54,8 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
   return (
     <form action={action} className="flex max-w-3xl flex-col gap-12">
       <input type="hidden" name="hours_json" value={JSON.stringify(hours)} />
-      <input type="hidden" name="provincia" value={provincia} />
-      <input type="hidden" name="municipio" value={municipio} />
+      <input type="hidden" name="region" value={region} />
+      <input type="hidden" name="comuna" value={comuna} />
       <input type="hidden" name="logo_url" value={logoUrl ?? ""} />
 
       {/* Identidad */}
@@ -176,19 +176,19 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
         </FieldGroup>
         <Field label="Sector / Barrio (opcional)">
           <Input
-            name="reparto"
-            defaultValue={salon?.reparto ?? ""}
+            name="sector"
+            defaultValue={salon?.sector ?? ""}
             placeholder="Ej. Pedro de Valdivia"
           />
         </Field>
         <FieldGroup>
           <Field label="Región">
             <Select
-              value={provincia}
+              value={region}
               onValueChange={(v) => {
                 const next = v ?? "";
-                setProvincia(next);
-                setMunicipio(""); // resetea al cambiar región
+                setRegion(next);
+                setComuna(""); // resetea al cambiar región
               }}
             >
               <SelectTrigger>
@@ -205,21 +205,21 @@ export function SalonForm({ salon }: { salon: Salon | null }) {
           </Field>
           <Field label="Comuna">
             <Select
-              value={municipio}
-              onValueChange={(v) => setMunicipio(v ?? "")}
-              disabled={!provincia}
+              value={comuna}
+              onValueChange={(v) => setComuna(v ?? "")}
+              disabled={!region}
             >
               <SelectTrigger>
                 <SelectValue
                   placeholder={
-                    provincia
+                    region
                       ? "Selecciona una comuna"
                       : "Selecciona una región primero"
                   }
                 />
               </SelectTrigger>
               <SelectContent>
-                {municipios.map((m) => (
+                {comunas.map((m) => (
                   <SelectItem key={m} value={m}>
                     {m}
                   </SelectItem>

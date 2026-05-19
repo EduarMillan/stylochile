@@ -47,7 +47,7 @@ export async function generateMetadata({
   const supabase = await createClient();
   const { data } = await supabase
     .from("salons")
-    .select("name, description, logo_url, municipio, provincia")
+    .select("name, description, logo_url, comuna, region")
     .eq("slug", slug)
     .eq("is_published", true)
     .is("suspended_at", null)
@@ -57,7 +57,7 @@ export async function generateMetadata({
     return { title: "Salón no encontrado" };
   }
 
-  const location = [data.municipio, data.provincia].filter(Boolean).join(", ");
+  const location = [data.comuna, data.region].filter(Boolean).join(", ");
   const title = `${data.name}${location ? ` · ${location}` : ""}`;
   const description =
     data.description ??
@@ -173,12 +173,12 @@ export default async function SalonShowcasePage({
   const fullAddress = composeAddress({
     calle: salon.calle,
     numero: salon.numero,
-    reparto: salon.reparto,
-    municipio: salon.municipio,
-    provincia: salon.provincia,
+    sector: salon.sector,
+    comuna: salon.comuna,
+    region: salon.region,
   });
   const hasAddress = Boolean(
-    salon.calle || salon.reparto || salon.municipio || salon.provincia,
+    salon.calle || salon.sector || salon.comuna || salon.region,
   );
   const directionsLink = hasAddress ? mapsLink(fullAddress) : null;
   const whatsappLink = salon.whatsapp
@@ -530,12 +530,12 @@ export default async function SalonShowcasePage({
               {(salon.calle || salon.numero) && (
                 <p>{[salon.calle, salon.numero].filter(Boolean).join(" ")}</p>
               )}
-              {salon.reparto && (
-                <p className="text-muted-foreground">{salon.reparto}</p>
+              {salon.sector && (
+                <p className="text-muted-foreground">{salon.sector}</p>
               )}
-              {(salon.municipio || salon.provincia) && (
+              {(salon.comuna || salon.region) && (
                 <p className="text-sm uppercase tracking-[0.1em] text-muted-foreground">
-                  {[salon.municipio, salon.provincia]
+                  {[salon.comuna, salon.region]
                     .filter(Boolean)
                     .join(" · ")}
                 </p>

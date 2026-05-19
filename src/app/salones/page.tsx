@@ -24,7 +24,7 @@ export default async function ExplorerPage() {
   const { data: salonRows } = await supabase
     .from("salons")
     .select(
-      "id, slug, name, description, provincia, municipio, reparto, calle, numero, logo_url, hours",
+      "id, slug, name, description, region, comuna, sector, calle, numero, logo_url, hours",
     )
     .eq("is_published", true)
     .order("created_at", { ascending: false });
@@ -34,9 +34,9 @@ export default async function ExplorerPage() {
     slug: string;
     name: string;
     description: string | null;
-    provincia: string | null;
-    municipio: string | null;
-    reparto: string | null;
+    region: string | null;
+    comuna: string | null;
+    sector: string | null;
     calle: string | null;
     numero: string | null;
     logo_url: string | null;
@@ -79,9 +79,9 @@ export default async function ExplorerPage() {
         slug: s.slug,
         name: s.name,
         description: s.description,
-        provincia: s.provincia,
-        municipio: s.municipio,
-        reparto: s.reparto,
+        region: s.region,
+        comuna: s.comuna,
+        sector: s.sector,
         calle: s.calle,
         numero: s.numero,
         logoUrl: s.logo_url,
@@ -135,7 +135,7 @@ export default async function ExplorerPage() {
       <section className="px-4 pb-16 sm:px-8 sm:pb-20 lg:px-16 lg:pb-24">
         <SalonExplorer
           cards={cards}
-          provincias={CHILE_REGIONES}
+          regiones={CHILE_REGIONES}
         />
       </section>
 

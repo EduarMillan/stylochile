@@ -38,9 +38,9 @@ const SalonSchema = z.object({
   description: z.string().max(2000).optional().or(z.literal("")),
   calle: z.string().max(120).optional().or(z.literal("")),
   numero: z.string().max(40).optional().or(z.literal("")),
-  reparto: z.string().max(120).optional().or(z.literal("")),
-  municipio: z.string().max(120).optional().or(z.literal("")),
-  provincia: z.string().max(120).optional().or(z.literal("")),
+  sector: z.string().max(120).optional().or(z.literal("")),
+  comuna: z.string().max(120).optional().or(z.literal("")),
+  region: z.string().max(120).optional().or(z.literal("")),
   phone: z.string().max(40).optional().or(z.literal("")),
   whatsapp: z.string().max(40).optional().or(z.literal("")),
   logo_url: z.string().url().max(500).optional().or(z.literal("")),
@@ -78,16 +78,16 @@ export async function saveSalonAction(
   const phoneFull = buildChilePhone(phoneRaw);
   const whatsappFull = buildChilePhone(whatsappRaw);
 
-  const provincia = String(formData.get("provincia") ?? "").trim();
-  const municipio = String(formData.get("municipio") ?? "").trim();
+  const region = String(formData.get("region") ?? "").trim();
+  const comuna = String(formData.get("comuna") ?? "").trim();
 
   // Valida combinación región/comuna
-  if (provincia && !(provincia in CHILE_COMUNAS)) {
+  if (region && !(region in CHILE_COMUNAS)) {
     return { error: "Región no válida." };
   }
-  if (municipio && provincia) {
-    const valid = CHILE_COMUNAS[provincia] ?? [];
-    if (!valid.includes(municipio)) {
+  if (comuna && region) {
+    const valid = CHILE_COMUNAS[region] ?? [];
+    if (!valid.includes(comuna)) {
       return { error: "La comuna no pertenece a la región seleccionada." };
     }
   }
@@ -98,9 +98,9 @@ export async function saveSalonAction(
     description: String(formData.get("description") ?? "").trim(),
     calle: String(formData.get("calle") ?? "").trim(),
     numero: String(formData.get("numero") ?? "").trim(),
-    reparto: String(formData.get("reparto") ?? "").trim(),
-    municipio,
-    provincia,
+    sector: String(formData.get("sector") ?? "").trim(),
+    comuna,
+    region,
     phone: phoneFull,
     whatsapp: whatsappFull,
     logo_url: String(formData.get("logo_url") ?? "").trim(),
@@ -137,9 +137,9 @@ export async function saveSalonAction(
     description: data.description || null,
     calle: data.calle || null,
     numero: data.numero || null,
-    reparto: data.reparto || null,
-    municipio: data.municipio || null,
-    provincia: data.provincia || null,
+    sector: data.sector || null,
+    comuna: data.comuna || null,
+    region: data.region || null,
     phone: data.phone || null,
     whatsapp: data.whatsapp || null,
     logo_url: data.logo_url || null,

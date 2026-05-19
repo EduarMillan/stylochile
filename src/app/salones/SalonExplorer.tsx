@@ -21,9 +21,9 @@ export type SalonCard = {
   slug: string;
   name: string;
   description: string | null;
-  provincia: string | null;
-  municipio: string | null;
-  reparto: string | null;
+  region: string | null;
+  comuna: string | null;
+  sector: string | null;
   calle: string | null;
   numero: string | null;
   logoUrl: string | null;
@@ -35,12 +35,12 @@ export type SalonCard = {
 
 export function SalonExplorer({
   cards,
-  provincias,
+  regiones,
 }: {
   cards: SalonCard[];
-  provincias: string[];
+  regiones: string[];
 }) {
-  const [provincia, setProvincia] = useState<string>("");
+  const [region, setRegion] = useState<string>("");
   const [query, setQuery] = useState("");
   // El badge abierto/cerrado se calcula en cliente para evitar mismatch de
   // hidratación (server podría tener otra zona horaria). Null hasta el
@@ -55,19 +55,19 @@ export function SalonExplorer({
 
   const filtered = useMemo(() => {
     let list = cards;
-    if (provincia) {
-      list = list.filter((c) => c.provincia === provincia);
+    if (region) {
+      list = list.filter((c) => c.region === region);
     }
     const q = query.trim().toLowerCase();
     if (q) {
       list = list.filter((c) =>
-        [c.name, c.description, c.reparto, c.municipio]
+        [c.name, c.description, c.sector, c.comuna]
           .filter(Boolean)
           .some((field) => (field as string).toLowerCase().includes(q)),
       );
     }
     return list;
-  }, [cards, provincia, query]);
+  }, [cards, region, query]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -89,24 +89,24 @@ export function SalonExplorer({
           </label>
           <div className="flex items-center gap-2">
             <Select
-              value={provincia}
-              onValueChange={(v) => setProvincia(v ?? "")}
+              value={region}
+              onValueChange={(v) => setRegion(v ?? "")}
             >
               <SelectTrigger className="flex-1">
                 <SelectValue placeholder="Seleccione" />
               </SelectTrigger>
               <SelectContent>
-                {provincias.map((p) => (
+                {regiones.map((p) => (
                   <SelectItem key={p} value={p}>
                     {p}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            {provincia && (
+            {region && (
               <button
                 type="button"
-                onClick={() => setProvincia("")}
+                onClick={() => setRegion("")}
                 aria-label="Limpiar filtro de región"
                 className="size-9 rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
               >
@@ -150,7 +150,7 @@ export function SalonExplorer({
 }
 
 function Card({ card, now }: { card: SalonCard; now: Date | null }) {
-  const location = [card.reparto, card.municipio, card.provincia]
+  const location = [card.sector, card.comuna, card.region]
     .filter(Boolean)
     .join(" · ");
 
@@ -159,14 +159,14 @@ function Card({ card, now }: { card: SalonCard; now: Date | null }) {
     : null;
 
   const directionsLink =
-    card.calle || card.reparto || card.municipio || card.provincia
+    card.calle || card.sector || card.comuna || card.region
       ? mapsLink(
           composeAddress({
             calle: card.calle,
             numero: card.numero,
-            reparto: card.reparto,
-            municipio: card.municipio,
-            provincia: card.provincia,
+            sector: card.sector,
+            comuna: card.comuna,
+            region: card.region,
           }),
         )
       : null;

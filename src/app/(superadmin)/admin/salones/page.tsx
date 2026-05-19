@@ -8,8 +8,8 @@ type SalonRow = {
   slug: string;
   is_published: boolean;
   suspended_at: string | null;
-  provincia: string | null;
-  municipio: string | null;
+  region: string | null;
+  comuna: string | null;
   created_at: string;
   owner_id: string;
 };
@@ -33,7 +33,7 @@ export default async function AdminSalonsPage() {
   const { data: salons } = await supabase
     .from("salons")
     .select(
-      "id, name, slug, is_published, suspended_at, provincia, municipio, created_at, owner_id",
+      "id, name, slug, is_published, suspended_at, region, comuna, created_at, owner_id",
     )
     .order("created_at", { ascending: false });
 
@@ -76,8 +76,8 @@ export default async function AdminSalonsPage() {
       slug: s.slug,
       is_published: s.is_published,
       suspended_at: s.suspended_at,
-      provincia: s.provincia,
-      municipio: s.municipio,
+      region: s.region,
+      comuna: s.comuna,
       created_at: s.created_at,
       owner_email: p?.email ?? null,
       owner_name: p?.full_name ?? null,

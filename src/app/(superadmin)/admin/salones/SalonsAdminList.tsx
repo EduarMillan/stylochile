@@ -26,8 +26,8 @@ export type AdminSalonRow = {
   slug: string;
   is_published: boolean;
   suspended_at: string | null;
-  provincia: string | null;
-  municipio: string | null;
+  region: string | null;
+  comuna: string | null;
   created_at: string;
   owner_email: string | null;
   owner_name: string | null;
@@ -54,7 +54,7 @@ export function SalonsAdminList({ salons }: { salons: AdminSalonRow[] }) {
     const q = query.trim().toLowerCase();
     if (q) {
       list = list.filter((s) =>
-        [s.name, s.slug, s.owner_email, s.owner_name, s.provincia, s.municipio]
+        [s.name, s.slug, s.owner_email, s.owner_name, s.region, s.comuna]
           .filter(Boolean)
           .some((f) => (f as string).toLowerCase().includes(q)),
       );
@@ -237,12 +237,12 @@ function SalonRow({ salon }: { salon: AdminSalonRow }) {
               {salon.owner_name ?? "—"} ({salon.owner_email})
             </span>
           )}
-          {(salon.municipio || salon.provincia) && (
+          {(salon.comuna || salon.region) && (
             <span>
               <span className="text-[10px] font-bold uppercase tracking-[0.15em]">
                 Ubicación:
               </span>{" "}
-              {[salon.municipio, salon.provincia].filter(Boolean).join(", ")}
+              {[salon.comuna, salon.region].filter(Boolean).join(", ")}
             </span>
           )}
           <span>

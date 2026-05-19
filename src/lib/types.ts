@@ -42,11 +42,9 @@ export type Salon = {
   description: string | null;
   calle: string | null;
   numero: string | null;
-  entre_calle_a: string | null;
-  entre_calle_b: string | null;
-  reparto: string | null;
-  municipio: string | null;
-  provincia: string | null;
+  sector: string | null;
+  comuna: string | null;
+  region: string | null;
   phone: string | null;
   whatsapp: string | null;
   hours: WeeklyHours | null;
