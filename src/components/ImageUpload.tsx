@@ -63,12 +63,18 @@ export function ImageUpload({
         });
 
       if (error) {
+        // StorageError trae propiedades no-enumerables; las extraemos
+        // explícitamente para que se vean en consola.
+        const err = error as unknown as Record<string, unknown>;
         console.error("Image upload failed:", {
           path,
           bucket: "salon-media",
+          message: error.message,
+          name: error.name,
+          status: err.status ?? err.statusCode,
           error,
         });
-        toast.error(`Upload falló: ${error.message}`);
+        toast.error(`Upload falló: ${error.message || "error sin mensaje"}`);
         return;
       }
 

@@ -183,7 +183,7 @@ create policy "salon_media_owner_insert" on storage.objects for insert
     and exists (
       select 1 from public.salons
       where salons.owner_id = auth.uid()
-        and salons.id::text = (storage.foldername(name))[1]
+        and salons.id::text = (storage.foldername(storage.objects.name))[1]
     )
   );
 create policy "salon_media_owner_update" on storage.objects for update
@@ -192,7 +192,7 @@ create policy "salon_media_owner_update" on storage.objects for update
     and exists (
       select 1 from public.salons
       where salons.owner_id = auth.uid()
-        and salons.id::text = (storage.foldername(name))[1]
+        and salons.id::text = (storage.foldername(storage.objects.name))[1]
     )
   );
 create policy "salon_media_owner_delete" on storage.objects for delete
@@ -201,7 +201,7 @@ create policy "salon_media_owner_delete" on storage.objects for delete
     and exists (
       select 1 from public.salons
       where salons.owner_id = auth.uid()
-        and salons.id::text = (storage.foldername(name))[1]
+        and salons.id::text = (storage.foldername(storage.objects.name))[1]
     )
   );
 
