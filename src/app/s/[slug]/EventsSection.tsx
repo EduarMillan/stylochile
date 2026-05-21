@@ -1,8 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { CalendarDays, Tag, Users, XIcon } from "lucide-react";
+import {
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Tag,
+  Users,
+  XIcon,
+} from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -16,10 +23,12 @@ import {
 } from "@/lib/types";
 
 const TYPE_COLOR: Record<SalonEventType, [number, number, number]> = {
-  course: [167, 139, 250], // violet-400
-  event: [251, 113, 133], // rose-400
-  workshop: [56, 189, 248], // sky-400
+  course: [167, 139, 250],
+  event: [251, 113, 133],
+  workshop: [56, 189, 248],
 };
+
+const SWIPE_THRESHOLD_PX = 50;
 
 export function EventsSection({
   events,
@@ -28,12 +37,89 @@ export function EventsSection({
   events: SalonEvent[];
   whatsapp: string | null;
 }) {
+  const [index, setIndex] = useState(0);
+  const [detail, setDetail] = useState<SalonEvent | null>(null);
+  const touchStartRef = useRef<number | null>(null);
+
   if (events.length === 0) return null;
+
+  const total = events.length;
+  const safeIndex = ((index % total) + total) % total;
+  const hasMultiple = total > 1;
+
+  function prev() {
+    setIndex((i) => i - 1);
+  }
+  function next() {
+    setIndex((i) => i + 1);
+  }
+  function onTouchStart(e: React.TouchEvent) {
+    touchStartRef.current = e.touches[0].clientX;
+  }
+  function onTouchEnd(e: React.TouchEvent) {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    if (start === null) return;
+    const delta = e.changedTouches[0].clientX - start;
+    if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
+    if (delta > 0) prev();
+    else next();
+  }
+
   return (
-    <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {events.map((e) => (
-        <EventCard key={e.id} event={e} whatsapp={whatsapp} />
-      ))}
+    <div className="mt-10">
+      <div
+        className="relative"
+        aria-roledescription="carousel"
+        aria-label="Cursos y eventos del salón"
+      >
+        <div
+          className="relative overflow-hidden rounded-2xl"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <div
+            className="flex transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${safeIndex * 100}%)` }}
+          >
+            {events.map((e) => (
+              <div
+                key={e.id}
+                role="group"
+                aria-roledescription="diapositiva"
+                className="w-full shrink-0"
+              >
+                <EventCard
+                  event={e}
+                  whatsapp={whatsapp}
+                  onOpenDetail={() => setDetail(e)}
+                />
+              </div>
+            ))}
+          </div>
+
+          {hasMultiple && (
+            <>
+              <CarouselButton dir="prev" onClick={prev} />
+              <CarouselButton dir="next" onClick={next} />
+            </>
+          )}
+        </div>
+
+        {hasMultiple && (
+          <CarouselDots
+            count={total}
+            active={safeIndex}
+            onSelect={setIndex}
+          />
+        )}
+      </div>
+
+      <EventDetailDialog
+        event={detail}
+        whatsapp={whatsapp}
+        onClose={() => setDetail(null)}
+      />
     </div>
   );
 }
@@ -41,52 +127,43 @@ export function EventsSection({
 function EventCard({
   event: e,
   whatsapp,
+  onOpenDetail,
 }: {
   event: SalonEvent;
   whatsapp: string | null;
+  onOpenDetail: () => void;
 }) {
-  const [open, setOpen] = useState(false);
   const [r, g, b] = TYPE_COLOR[e.type];
   const rgb = `${r}, ${g}, ${b}`;
-
   const whatsappLink = buildWhatsappLink(whatsapp, e);
 
   return (
     <>
+      {/* === Mobile / tablet card (estilo actual) === */}
       <article
-        className="card-glam group relative flex flex-col overflow-hidden transition-all hover:translate-y-[-2px]"
-        style={{
-          borderColor: `rgba(${rgb}, 0.3)`,
-        }}
+        className="card-glam group relative flex flex-col overflow-hidden lg:hidden"
+        style={{ borderColor: `rgba(${rgb}, 0.3)` }}
       >
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={onOpenDetail}
           aria-label={`Ver detalle de ${e.title}`}
           className="absolute inset-0 z-10"
         />
 
-        {/* Cover image o gradiente decorativo */}
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
           {e.cover_image_url ? (
             <Image
               src={e.cover_image_url}
               alt={e.title}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="100vw"
+              className="object-cover"
               unoptimized
             />
           ) : (
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `linear-gradient(135deg, rgba(${rgb}, 0.35), rgba(${rgb}, 0.1) 50%, transparent), radial-gradient(ellipse at top right, rgba(212,175,55,0.18), transparent 60%)`,
-              }}
-            />
+            <DecorativeBackdrop rgb={rgb} />
           )}
-
-          {/* Type badge top-left */}
           <span
             className="absolute left-3 top-3 z-[1] rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur-md"
             style={{
@@ -97,41 +174,17 @@ function EventCard({
           >
             {EVENT_TYPE_LABEL[e.type]}
           </span>
-
-          {/* Soft bottom gradient */}
           <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-card to-transparent" />
         </div>
 
         <div className="flex flex-1 flex-col gap-3 p-5">
           <h3 className="font-serif text-xl leading-tight">{e.title}</h3>
-
-          <ul className="flex flex-col gap-1.5 text-xs text-muted-foreground">
-            <li className="inline-flex items-center gap-2">
-              <CalendarDays className="size-3.5 shrink-0 text-primary/80" />
-              <span>{formatRange(e.starts_at, e.ends_at)}</span>
-            </li>
-            {e.price != null && (
-              <li className="inline-flex items-center gap-2">
-                <Tag className="size-3.5 shrink-0 text-primary/80" />
-                <span className="text-foreground font-medium">
-                  {e.price.toLocaleString("es-CL")} {e.currency}
-                </span>
-              </li>
-            )}
-            {e.capacity_label && (
-              <li className="inline-flex items-center gap-2">
-                <Users className="size-3.5 shrink-0 text-primary/80" />
-                <span>{e.capacity_label}</span>
-              </li>
-            )}
-          </ul>
-
+          <EventMetaList event={e} />
           {e.description && (
             <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
               {e.description}
             </p>
           )}
-
           {whatsappLink && (
             <a
               href={whatsappLink}
@@ -146,38 +199,244 @@ function EventCard({
         </div>
       </article>
 
-      <EventDetailDialog
-        open={open}
-        onOpenChange={setOpen}
-        event={e}
-        whatsapp={whatsapp}
-      />
+      {/* === Desktop banner ancho === */}
+      <article
+        className="relative hidden aspect-[21/9] w-full overflow-hidden rounded-2xl border shadow-glam lg:block"
+        style={{ borderColor: `rgba(${rgb}, 0.4)` }}
+      >
+        <button
+          type="button"
+          onClick={onOpenDetail}
+          aria-label={`Ver detalle de ${e.title}`}
+          className="absolute inset-0 z-10"
+        />
+
+        {e.cover_image_url ? (
+          <Image
+            src={e.cover_image_url}
+            alt={e.title}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            unoptimized
+            priority
+          />
+        ) : (
+          <DecorativeBackdrop rgb={rgb} />
+        )}
+
+        {/* Gradiente diagonal para contraste del contenido */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to right, rgba(12,9,5,0.92) 0%, rgba(12,9,5,0.72) 35%, rgba(12,9,5,0.25) 65%, transparent 100%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/65 to-transparent"
+        />
+        {/* Acento dorado sutil en la esquina */}
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at top right, rgba(212,175,55,0.14), transparent 55%)",
+          }}
+        />
+
+        {/* Contenido */}
+        <div className="absolute inset-0 flex items-center p-10 xl:p-14">
+          <div className="max-w-xl">
+            <span
+              className="inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur-md"
+              style={{
+                borderColor: `rgba(${rgb}, 0.7)`,
+                backgroundColor: `rgba(${rgb}, 0.22)`,
+                color: `rgb(${rgb})`,
+              }}
+            >
+              {EVENT_TYPE_LABEL[e.type]}
+            </span>
+            <h3 className="mt-4 font-serif text-4xl leading-tight text-white drop-shadow-lg xl:text-5xl">
+              {e.title}
+            </h3>
+            <ul className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-white/90">
+              <li className="inline-flex items-center gap-2">
+                <CalendarDays className="size-4 shrink-0 text-primary" />
+                <span>{formatRange(e.starts_at, e.ends_at)}</span>
+              </li>
+              {e.price != null && (
+                <li className="inline-flex items-center gap-2">
+                  <Tag className="size-4 shrink-0 text-primary" />
+                  <span className="font-medium">
+                    {e.price.toLocaleString("es-CL")} {e.currency}
+                  </span>
+                </li>
+              )}
+              {e.capacity_label && (
+                <li className="inline-flex items-center gap-2">
+                  <Users className="size-4 shrink-0 text-primary" />
+                  <span>{e.capacity_label}</span>
+                </li>
+              )}
+            </ul>
+            {e.description && (
+              <p className="mt-4 line-clamp-2 max-w-lg text-sm leading-relaxed text-white/85 drop-shadow">
+                {e.description}
+              </p>
+            )}
+            <div className="mt-6 flex flex-wrap gap-3">
+              {whatsappLink && (
+                <a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(ev) => ev.stopPropagation()}
+                  className="relative z-20 inline-flex items-center gap-2 rounded-full border border-emerald-500/60 bg-emerald-500/20 px-5 py-2.5 text-sm font-bold uppercase tracking-[0.15em] text-emerald-300 backdrop-blur-md transition-all hover:scale-[1.02] hover:bg-emerald-500/30"
+                >
+                  <WhatsAppIcon /> Quiero info
+                </a>
+              )}
+              <button
+                type="button"
+                onClick={(ev) => {
+                  ev.stopPropagation();
+                  onOpenDetail();
+                }}
+                className="relative z-20 inline-flex items-center gap-2 rounded-full border border-white/40 bg-background/20 px-5 py-2.5 text-sm font-bold uppercase tracking-[0.15em] text-white backdrop-blur-md transition-all hover:scale-[1.02] hover:border-white hover:bg-background/40"
+              >
+                Ver detalle →
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
     </>
   );
 }
 
+function EventMetaList({ event: e }: { event: SalonEvent }) {
+  return (
+    <ul className="flex flex-col gap-1.5 text-xs text-muted-foreground">
+      <li className="inline-flex items-center gap-2">
+        <CalendarDays className="size-3.5 shrink-0 text-primary/80" />
+        <span>{formatRange(e.starts_at, e.ends_at)}</span>
+      </li>
+      {e.price != null && (
+        <li className="inline-flex items-center gap-2">
+          <Tag className="size-3.5 shrink-0 text-primary/80" />
+          <span className="font-medium text-foreground">
+            {e.price.toLocaleString("es-CL")} {e.currency}
+          </span>
+        </li>
+      )}
+      {e.capacity_label && (
+        <li className="inline-flex items-center gap-2">
+          <Users className="size-3.5 shrink-0 text-primary/80" />
+          <span>{e.capacity_label}</span>
+        </li>
+      )}
+    </ul>
+  );
+}
+
+function DecorativeBackdrop({ rgb }: { rgb: string }) {
+  return (
+    <div
+      className="absolute inset-0"
+      style={{
+        background: `linear-gradient(135deg, rgba(${rgb}, 0.45), rgba(${rgb}, 0.12) 50%, transparent), radial-gradient(ellipse at top right, rgba(212,175,55,0.22), transparent 55%)`,
+      }}
+    />
+  );
+}
+
+function CarouselButton({
+  dir,
+  onClick,
+}: {
+  dir: "prev" | "next";
+  onClick: () => void;
+}) {
+  const Icon = dir === "prev" ? ChevronLeft : ChevronRight;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={dir === "prev" ? "Evento anterior" : "Evento siguiente"}
+      className={`absolute top-1/2 z-30 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-background/55 text-foreground ring-1 ring-foreground/15 backdrop-blur-md transition-all hover:scale-105 hover:bg-background/85 active:scale-95 sm:size-11 ${
+        dir === "prev" ? "left-3 sm:left-4" : "right-3 sm:right-4"
+      }`}
+    >
+      <Icon className="size-5" aria-hidden />
+    </button>
+  );
+}
+
+function CarouselDots({
+  count,
+  active,
+  onSelect,
+}: {
+  count: number;
+  active: number;
+  onSelect: (i: number) => void;
+}) {
+  return (
+    <div className="mt-4 flex justify-center gap-1.5">
+      {Array.from({ length: count }).map((_, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onSelect(i)}
+          aria-label={`Ir al evento ${i + 1}`}
+          aria-current={i === active}
+          className={`h-1.5 rounded-full transition-all ${
+            i === active
+              ? "w-8 bg-primary"
+              : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
 function EventDetailDialog({
-  open,
-  onOpenChange,
   event: e,
   whatsapp,
+  onClose,
 }: {
-  open: boolean;
-  onOpenChange: (v: boolean) => void;
-  event: SalonEvent;
+  event: SalonEvent | null;
   whatsapp: string | null;
+  onClose: () => void;
 }) {
-  const [r, g, b] = TYPE_COLOR[e.type];
+  // Mantiene el último evento mostrado para que el contenido no parpadee
+  // a vacío durante la animación de cierre del diálogo.
+  const [snap, setSnap] = useState<SalonEvent | null>(e);
+  useEffect(() => {
+    if (e) setSnap(e);
+  }, [e]);
+
+  const open = e !== null;
+  if (!snap) return null;
+  const current = snap;
+
+  const [r, g, b] = TYPE_COLOR[current.type];
   const rgb = `${r}, ${g}, ${b}`;
-  const whatsappLink = buildWhatsappLink(whatsapp, e);
+  const whatsappLink = buildWhatsappLink(whatsapp, current);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
         showCloseButton={false}
         className="max-w-lg gap-0 overflow-hidden border-border bg-card p-0 sm:max-w-2xl"
       >
-        <DialogTitle className="sr-only">{e.title}</DialogTitle>
+        <DialogTitle className="sr-only">{current.title}</DialogTitle>
 
         <DialogClose
           aria-label="Cerrar"
@@ -188,12 +447,11 @@ function EventDetailDialog({
         </DialogClose>
 
         <div className="max-h-[calc(100dvh-2rem)] overflow-y-auto">
-          {/* Hero del evento */}
           <div className="relative w-full bg-muted aspect-[16/10]">
-            {e.cover_image_url ? (
+            {current.cover_image_url ? (
               <Image
-                src={e.cover_image_url}
-                alt={e.title}
+                src={current.cover_image_url}
+                alt={current.title}
                 fill
                 sizes="(max-width: 640px) 100vw, 672px"
                 className="object-cover"
@@ -201,12 +459,7 @@ function EventDetailDialog({
                 priority
               />
             ) : (
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: `linear-gradient(135deg, rgba(${rgb}, 0.45), rgba(${rgb}, 0.12) 50%, transparent), radial-gradient(ellipse at top right, rgba(212,175,55,0.22), transparent 55%)`,
-                }}
-              />
+              <DecorativeBackdrop rgb={rgb} />
             )}
 
             <div
@@ -227,24 +480,26 @@ function EventDetailDialog({
                   color: `rgb(${rgb})`,
                 }}
               >
-                {EVENT_TYPE_LABEL[e.type]}
+                {EVENT_TYPE_LABEL[current.type]}
               </span>
               <h2 className="mt-3 font-serif text-2xl leading-tight text-white drop-shadow-lg sm:text-3xl">
-                {e.title}
+                {current.title}
               </h2>
             </div>
           </div>
 
-          {/* Cuerpo */}
           <div className="flex flex-col gap-5 p-5 sm:p-7">
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <MetaCard icon={<CalendarDays className="size-4" />} label="Cuándo">
-                {formatRange(e.starts_at, e.ends_at)}
+              <MetaCard
+                icon={<CalendarDays className="size-4" />}
+                label="Cuándo"
+              >
+                {formatRange(current.starts_at, current.ends_at)}
               </MetaCard>
-              {e.price != null ? (
+              {current.price != null ? (
                 <MetaCard icon={<Tag className="size-4" />} label="Precio">
                   <span className="font-medium">
-                    {e.price.toLocaleString("es-CL")} {e.currency}
+                    {current.price.toLocaleString("es-CL")} {current.currency}
                   </span>
                 </MetaCard>
               ) : (
@@ -253,17 +508,17 @@ function EventDetailDialog({
                 </MetaCard>
               )}
               <MetaCard icon={<Users className="size-4" />} label="Cupos">
-                {e.capacity_label ?? "Consultar disponibilidad"}
+                {current.capacity_label ?? "Consultar disponibilidad"}
               </MetaCard>
             </ul>
 
-            {e.description && (
+            {current.description && (
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
                   Detalles
                 </p>
                 <p className="mt-2.5 whitespace-pre-line text-sm leading-relaxed text-foreground/90">
-                  {e.description}
+                  {current.description}
                 </p>
               </div>
             )}
