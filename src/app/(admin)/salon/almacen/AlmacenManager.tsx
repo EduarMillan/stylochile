@@ -266,8 +266,17 @@ function ItemRow({ item }: { item: InventoryItem }) {
 
 function ItemDialog({ initial }: { initial?: InventoryItem }) {
   const [open, setOpen] = useState(false);
-  const [unit, setUnit] = useState(initial?.unit ?? "u");
-  const [currency, setCurrency] = useState(initial?.currency ?? "CLP");
+  // Snapshot estable de `initial` durante la apertura del diálogo. Evita
+  // que los defaultValue cambien post-save (warning de Base UI). Se
+  // refresca cuando el diálogo se cierra para que la próxima apertura
+  // muestre datos frescos.
+  const [snap, setSnap] = useState(initial);
+  useEffect(() => {
+    if (!open) setSnap(initial);
+  }, [open, initial]);
+
+  const [unit, setUnit] = useState(snap?.unit ?? "u");
+  const [currency, setCurrency] = useState(snap?.currency ?? "CLP");
   const [state, action, pending] = useActionState<ItemActionState, FormData>(
     saveItemAction,
     null,
@@ -312,7 +321,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
           </DialogTitle>
         </DialogHeader>
         <form action={action} className="flex flex-col gap-4">
-          {initial && <input type="hidden" name="id" value={initial.id} />}
+          {snap && <input type="hidden" name="id" value={snap.id} />}
           <input type="hidden" name="unit" value={unit} />
           <input type="hidden" name="currency" value={currency} />
 
@@ -324,7 +333,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
               <Input
                 name="name"
                 required
-                defaultValue={initial?.name ?? ""}
+                defaultValue={snap?.name ?? ""}
                 placeholder="Ej. Tinte L'Oréal castaño 6.0"
               />
             </div>
@@ -332,12 +341,12 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
               <Label className="text-xs uppercase tracking-[0.15em]">
                 SKU
               </Label>
-              <Input name="sku" defaultValue={initial?.sku ?? ""} />
+              <Input name="sku" defaultValue={snap?.sku ?? ""} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {!initial && (
+            {!snap && (
               <div className="flex flex-col gap-2">
                 <Label className="text-xs uppercase tracking-[0.15em]">
                   Cantidad inicial
@@ -351,7 +360,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
                 />
               </div>
             )}
-            {initial && <input type="hidden" name="quantity" value={initial.quantity} />}
+            {snap && <input type="hidden" name="quantity" value={snap.quantity} />}
             <div className="flex flex-col gap-2">
               <Label className="text-xs uppercase tracking-[0.15em]">
                 Mínimo
@@ -361,7 +370,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
                 type="number"
                 step="0.01"
                 min="0"
-                defaultValue={initial?.min_quantity ?? "0"}
+                defaultValue={snap?.min_quantity ?? "0"}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -393,7 +402,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
                 type="number"
                 step="0.01"
                 min="0"
-                defaultValue={initial?.unit_cost ?? ""}
+                defaultValue={snap?.unit_cost ?? ""}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -424,7 +433,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
             </Label>
             <Input
               name="supplier"
-              defaultValue={initial?.supplier ?? ""}
+              defaultValue={snap?.supplier ?? ""}
               placeholder="Ej. Distribuidora Santiago"
             />
           </div>
@@ -435,7 +444,7 @@ function ItemDialog({ initial }: { initial?: InventoryItem }) {
             <Textarea
               name="notes"
               rows={2}
-              defaultValue={initial?.notes ?? ""}
+              defaultValue={snap?.notes ?? ""}
             />
           </div>
 

@@ -269,10 +269,21 @@ function ServiceDialog({
   triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
+  // Snapshot estable de los valores iniciales para la duración de una
+  // apertura del diálogo. Mientras open=true, snap no cambia → los
+  // defaultValue de los Inputs uncontrolled permanecen constantes (sin
+  // warning de Base UI). Cuando el diálogo se cierra, refrescamos snap
+  // con el `initial` actual del padre, así la próxima apertura muestra
+  // datos frescos (importante después de guardar).
+  const [snap, setSnap] = useState(initial);
+  useEffect(() => {
+    if (!open) setSnap(initial);
+  }, [open, initial]);
+
   const [areaId, setAreaId] = useState<string>(
-    initial?.area_id ?? (areas[0]?.id ?? "none"),
+    snap?.area_id ?? (areas[0]?.id ?? "none"),
   );
-  const [currency, setCurrency] = useState(initial?.currency ?? "CLP");
+  const [currency, setCurrency] = useState(snap?.currency ?? "CLP");
   const [state, action, pending] = useActionState<ServiceActionState, FormData>(
     saveServiceAction,
     null,
@@ -305,7 +316,7 @@ function ServiceDialog({
         </DialogHeader>
 
         <form action={action} className="flex flex-col gap-4">
-          {initial && <input type="hidden" name="id" value={initial.id} />}
+          {snap && <input type="hidden" name="id" value={snap.id} />}
           <input type="hidden" name="area_id" value={areaId} />
           <input type="hidden" name="currency" value={currency} />
 
@@ -345,7 +356,7 @@ function ServiceDialog({
               id="svc-name"
               name="name"
               required
-              defaultValue={initial?.name ?? ""}
+              defaultValue={snap?.name ?? ""}
               placeholder="Ej. Balayage"
             />
           </div>
@@ -361,7 +372,7 @@ function ServiceDialog({
               id="svc-desc"
               name="description"
               rows={3}
-              defaultValue={initial?.description ?? ""}
+              defaultValue={snap?.description ?? ""}
             />
           </div>
 
@@ -379,7 +390,7 @@ function ServiceDialog({
                 type="number"
                 step="0.01"
                 min="0"
-                defaultValue={initial?.price ?? ""}
+                defaultValue={snap?.price ?? ""}
               />
             </div>
             <div className="col-span-1 flex flex-col gap-2">
@@ -412,7 +423,7 @@ function ServiceDialog({
                 type="number"
                 min="1"
                 step="1"
-                defaultValue={initial?.duration_minutes ?? ""}
+                defaultValue={snap?.duration_minutes ?? ""}
               />
             </div>
           </div>

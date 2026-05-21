@@ -276,9 +276,14 @@ function StaffDialog({
   triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [areaId, setAreaId] = useState<string>(initial?.area_id ?? "none");
+  // Snapshot estable de `initial` durante la apertura del diálogo. Evita
+  // que los defaultValue cambien post-save (warning de Base UI). Se
+  // refresca cuando el diálogo se cierra para que la próxima apertura
+  // muestre datos frescos.
+  const [snap, setSnap] = useState(initial);
+  const [areaId, setAreaId] = useState<string>(snap?.area_id ?? "none");
   const [photoUrl, setPhotoUrl] = useState<string | null>(
-    initial?.photo_url ?? null,
+    snap?.photo_url ?? null,
   );
   const [state, action, pending] = useActionState<StaffActionState, FormData>(
     saveStaffAction,
@@ -293,9 +298,10 @@ function StaffDialog({
     if (state?.error) toast.error(state.error);
   }, [state]);
 
-  // Reset al cerrar el diálogo.
+  // Reset al cerrar el diálogo + refresca snapshot con el initial actual.
   useEffect(() => {
     if (!open) {
+      setSnap(initial);
       setAreaId(initial?.area_id ?? "none");
       setPhotoUrl(initial?.photo_url ?? null);
     }
@@ -320,7 +326,7 @@ function StaffDialog({
         </DialogHeader>
 
         <form action={action} className="flex flex-col gap-5">
-          {initial && <input type="hidden" name="id" value={initial.id} />}
+          {snap && <input type="hidden" name="id" value={snap.id} />}
           <input type="hidden" name="area_id" value={areaId} />
           <input type="hidden" name="photo_url" value={photoUrl ?? ""} />
 
@@ -342,7 +348,7 @@ function StaffDialog({
                 <Input
                   name="name"
                   required
-                  defaultValue={initial?.name ?? ""}
+                  defaultValue={snap?.name ?? ""}
                   placeholder="Ej. María Pérez"
                 />
               </div>
@@ -352,7 +358,7 @@ function StaffDialog({
                 </Label>
                 <Input
                   name="role"
-                  defaultValue={initial?.role ?? ""}
+                  defaultValue={snap?.role ?? ""}
                   placeholder="Ej. Estilista, Estomatóloga…"
                   list="staff-roles"
                 />
@@ -401,7 +407,7 @@ function StaffDialog({
             </Label>
             <Input
               name="specialties"
-              defaultValue={initial?.specialties?.join(", ") ?? ""}
+              defaultValue={snap?.specialties?.join(", ") ?? ""}
               placeholder="Coloración, Balayage, Cortes asimétricos"
             />
             <p className="text-xs text-muted-foreground">
@@ -422,7 +428,7 @@ function StaffDialog({
                 max={80}
                 step={1}
                 inputMode="numeric"
-                defaultValue={initial?.years_experience ?? ""}
+                defaultValue={snap?.years_experience ?? ""}
                 placeholder="8"
               />
             </div>
@@ -436,7 +442,7 @@ function StaffDialog({
                 </span>
                 <Input
                   name="instagram_handle"
-                  defaultValue={initial?.instagram_handle ?? ""}
+                  defaultValue={snap?.instagram_handle ?? ""}
                   placeholder="mariastudio"
                   pattern="[A-Za-z0-9._]{1,30}"
                   className="flex-1 rounded-none border-0 focus-visible:ring-0"
@@ -452,7 +458,7 @@ function StaffDialog({
             <Textarea
               name="certifications"
               rows={2}
-              defaultValue={initial?.certifications ?? ""}
+              defaultValue={snap?.certifications ?? ""}
               placeholder="Certificada L'Oréal Professionnel, Master en colorimetría…"
             />
           </div>
@@ -464,7 +470,7 @@ function StaffDialog({
             <Textarea
               name="bio"
               rows={3}
-              defaultValue={initial?.bio ?? ""}
+              defaultValue={snap?.bio ?? ""}
               placeholder="Una breve presentación o trayectoria."
             />
           </div>

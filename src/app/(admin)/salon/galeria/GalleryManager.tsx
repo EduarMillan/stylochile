@@ -298,12 +298,17 @@ function GalleryDialog({
   triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [areaId, setAreaId] = useState<string>(initial?.area_id ?? "none");
+  // Snapshot estable de `initial` durante la apertura del diálogo. Evita
+  // que los defaultValue cambien post-save (warning de Base UI). Se
+  // refresca cuando el diálogo se cierra para que la próxima apertura
+  // muestre datos frescos.
+  const [snap, setSnap] = useState(initial);
+  const [areaId, setAreaId] = useState<string>(snap?.area_id ?? "none");
   const [beforeUrl, setBeforeUrl] = useState<string | null>(
-    initial?.before_url ?? null,
+    snap?.before_url ?? null,
   );
   const [afterUrl, setAfterUrl] = useState<string | null>(
-    initial?.after_url ?? null,
+    snap?.after_url ?? null,
   );
 
   const [state, action, pending] = useActionState<GalleryActionState, FormData>(
@@ -342,11 +347,13 @@ function GalleryDialog({
     if (state?.error) toast.error(state.error);
   }, [state]);
 
-  // Al cerrar el diálogo, vuelve el estado a su valor inicial. Sin esto
-  // los URLs y el área seleccionada persistirían entre aperturas y la
-  // siguiente vez verías la imagen anterior cargada.
+  // Al cerrar el diálogo, vuelve el estado a su valor inicial y refresca
+  // el snapshot con el initial actual. Sin esto los URLs y el área
+  // seleccionada persistirían entre aperturas y la siguiente vez verías
+  // la imagen anterior cargada.
   useEffect(() => {
     if (!open) {
+      setSnap(initial);
       setAreaId(initial?.area_id ?? "none");
       setBeforeUrl(initial?.before_url ?? null);
       setAfterUrl(initial?.after_url ?? null);
@@ -372,7 +379,7 @@ function GalleryDialog({
         </DialogHeader>
 
         <form action={action} className="flex flex-col gap-5">
-          {initial && <input type="hidden" name="id" value={initial.id} />}
+          {snap && <input type="hidden" name="id" value={snap.id} />}
           <input type="hidden" name="area_id" value={areaId} />
           <input type="hidden" name="before_url" value={beforeUrl ?? ""} />
           <input type="hidden" name="after_url" value={afterUrl ?? ""} />
@@ -446,7 +453,7 @@ function GalleryDialog({
             <Input
               id="gal-title"
               name="title"
-              defaultValue={initial?.title ?? ""}
+              defaultValue={snap?.title ?? ""}
               placeholder="Ej. Color con balayage en castaño"
             />
           </div>
@@ -462,7 +469,7 @@ function GalleryDialog({
               id="gal-desc"
               name="description"
               rows={3}
-              defaultValue={initial?.description ?? ""}
+              defaultValue={snap?.description ?? ""}
             />
           </div>
 

@@ -126,8 +126,13 @@ function FacilityDialog({
   triggerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
+  // Snapshot estable de `initial` durante la apertura del diálogo. Evita
+  // que los defaultValue cambien post-save (warning de Base UI). Se
+  // refresca cuando el diálogo se cierra para que la próxima apertura
+  // muestre datos frescos.
+  const [snap, setSnap] = useState(initial);
   const [imageUrl, setImageUrl] = useState<string | null>(
-    initial?.image_url ?? null,
+    snap?.image_url ?? null,
   );
 
   const [state, action, pending] = useActionState<
@@ -143,10 +148,11 @@ function FacilityDialog({
     if (state?.error) toast.error(state.error);
   }, [state]);
 
-  // Reset al cerrar el diálogo para que la siguiente apertura no muestre
-  // la foto anterior.
+  // Reset al cerrar el diálogo + refresca snapshot con el initial actual.
+  // Sin esto la siguiente apertura mostraría la foto anterior.
   useEffect(() => {
     if (!open) {
+      setSnap(initial);
       setImageUrl(initial?.image_url ?? null);
     }
   }, [open, initial]);
@@ -170,7 +176,7 @@ function FacilityDialog({
         </DialogHeader>
 
         <form action={action} className="flex flex-col gap-5">
-          {initial && <input type="hidden" name="id" value={initial.id} />}
+          {snap && <input type="hidden" name="id" value={snap.id} />}
           <input type="hidden" name="image_url" value={imageUrl ?? ""} />
 
           <ImageUpload
@@ -188,7 +194,7 @@ function FacilityDialog({
             </Label>
             <Input
               name="caption"
-              defaultValue={initial?.caption ?? ""}
+              defaultValue={snap?.caption ?? ""}
               placeholder="Ej. Zona de coloración, recepción, equipo profesional…"
               maxLength={200}
             />
