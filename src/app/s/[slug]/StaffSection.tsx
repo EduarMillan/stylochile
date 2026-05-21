@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { XIcon } from "lucide-react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
-  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { SalonArea, Staff } from "@/lib/types";
@@ -132,57 +133,87 @@ function StaffCard({
       </article>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl border-border bg-card">
-          <DialogHeader>
-            <DialogTitle className="sr-only">{s.name}</DialogTitle>
-          </DialogHeader>
+        <DialogContent
+          showCloseButton={false}
+          className="max-w-lg gap-0 overflow-hidden border-border bg-card p-0 sm:max-w-2xl"
+        >
+          <DialogTitle className="sr-only">{s.name}</DialogTitle>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-[200px_minmax(0,1fr)]">
-            <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-border bg-muted">
+          {/* Close flotante con backdrop-blur — visible sobre cualquier foto */}
+          <DialogClose
+            aria-label="Cerrar"
+            className="absolute right-3 top-3 z-30 grid size-9 place-items-center rounded-full bg-background/55 text-foreground ring-1 ring-foreground/15 backdrop-blur-md transition-all hover:scale-105 hover:bg-background/85 active:scale-95"
+          >
+            <XIcon className="size-4" />
+            <span className="sr-only">Cerrar</span>
+          </DialogClose>
+
+          <div className="max-h-[calc(100dvh-2rem)] overflow-y-auto">
+            {/* Hero photo con gradiente y nombre superpuesto */}
+            <div className="relative w-full bg-muted aspect-[4/3] sm:aspect-[16/10]">
               {s.photo_url ? (
                 <Image
                   src={s.photo_url}
                   alt={s.name}
                   fill
-                  sizes="(max-width: 640px) 100vw, 200px"
+                  sizes="(max-width: 640px) 100vw, 672px"
                   className="object-cover"
                   unoptimized
+                  priority
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center text-xs uppercase tracking-[0.15em] text-muted-foreground">
                   Sin foto
                 </div>
               )}
-              {s.years_experience != null && (
-                <span className="absolute right-3 top-3 rounded-full border border-primary/40 bg-background/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-primary backdrop-blur-md">
-                  {s.years_experience}+ años
-                </span>
-              )}
+
+              {/* Capa dorada sutil en esquinas para detalle de lujo */}
+              <div
+                aria-hidden
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at top right, rgba(212,175,55,0.18), transparent 55%)",
+                }}
+              />
+
+              {/* Gradiente inferior + nombre */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent px-5 pb-5 pt-20 sm:px-7 sm:pb-6">
+                <div className="flex items-end justify-between gap-3">
+                  <div className="min-w-0">
+                    <h2 className="font-serif text-2xl leading-tight text-white drop-shadow-lg sm:text-3xl">
+                      {s.name}
+                    </h2>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                      {s.role && (
+                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary drop-shadow">
+                          {s.role}
+                        </p>
+                      )}
+                      {area && (
+                        <p className="text-[10px] uppercase tracking-[0.15em] text-white/75 drop-shadow">
+                          · {area.name}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  {s.years_experience != null && (
+                    <span className="shrink-0 rounded-full border border-primary/60 bg-background/25 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-primary backdrop-blur-md">
+                      {s.years_experience}+ años
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
 
-            <div className="flex min-w-0 flex-col gap-3">
-              <div>
-                <h2 className="font-serif text-2xl leading-tight sm:text-3xl">
-                  {s.name}
-                </h2>
-                {s.role && (
-                  <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
-                    {s.role}
-                  </p>
-                )}
-                {area && (
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                    {area.name}
-                  </p>
-                )}
-              </div>
-
+            {/* Cuerpo */}
+            <div className="flex flex-col gap-6 p-5 sm:p-7">
               {s.instagram_handle && (
                 <a
                   href={`https://instagram.com/${s.instagram_handle}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 self-start text-sm text-foreground/80 transition-colors hover:text-primary"
+                  className="inline-flex items-center gap-2 self-start rounded-full border border-border bg-muted/50 px-3 py-1.5 text-sm text-foreground/85 transition-colors hover:border-primary hover:text-primary"
                 >
                   <InstagramIcon />
                   <span>@{s.instagram_handle}</span>
@@ -190,49 +221,57 @@ function StaffCard({
               )}
 
               {s.specialties.length > 0 && (
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                    Especialidades
-                  </p>
-                  <ul className="mt-2 flex flex-wrap gap-1.5">
+                <DetailBlock label="Especialidades">
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
                     {s.specialties.map((sp) => (
                       <li
                         key={sp}
-                        className="rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] uppercase tracking-[0.1em] text-foreground/80"
+                        className="rounded-full border border-border bg-muted px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-foreground/85"
                       >
                         {sp}
                       </li>
                     ))}
                   </ul>
-                </div>
+                </DetailBlock>
+              )}
+
+              {s.certifications && (
+                <DetailBlock label="Certificaciones">
+                  <p className="mt-2.5 whitespace-pre-line text-sm italic leading-relaxed text-foreground/85">
+                    {s.certifications}
+                  </p>
+                </DetailBlock>
+              )}
+
+              {s.bio && (
+                <DetailBlock label={`Sobre ${s.name.split(" ")[0]}`}>
+                  <p className="mt-2.5 whitespace-pre-line text-sm leading-relaxed text-foreground/90">
+                    {s.bio}
+                  </p>
+                </DetailBlock>
               )}
             </div>
           </div>
-
-          {s.certifications && (
-            <div className="mt-2">
-              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                Certificaciones
-              </p>
-              <p className="mt-2 whitespace-pre-line text-sm italic leading-relaxed text-foreground/85">
-                {s.certifications}
-              </p>
-            </div>
-          )}
-
-          {s.bio && (
-            <div className="mt-2">
-              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                Sobre {s.name.split(" ")[0]}
-              </p>
-              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-foreground/90">
-                {s.bio}
-              </p>
-            </div>
-          )}
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+function DetailBlock({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
+        {label}
+      </p>
+      {children}
+    </div>
   );
 }
 
