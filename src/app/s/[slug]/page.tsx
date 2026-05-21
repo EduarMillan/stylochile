@@ -8,6 +8,7 @@ import { PublicHeader } from "@/components/PublicHeader";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ServicesTabs } from "./ServicesTabs";
 import { GalleryPaginated } from "./GalleryPaginated";
+import { StaffSection } from "./StaffSection";
 import { composeAddress } from "@/lib/chile";
 import {
   DAYS,
@@ -387,102 +388,7 @@ export default async function SalonShowcasePage({
             El equipo
           </p>
           <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Quién te atenderá</h2>
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {staffList.map((s) => {
-              const area = areaList.find((a) => a.id === s.area_id);
-              return (
-                <article
-                  key={s.id}
-                  className="card-glam card-glam-hover flex flex-col overflow-hidden"
-                >
-                  <div className="relative aspect-square bg-muted">
-                    {s.photo_url ? (
-                      <Image
-                        src={s.photo_url}
-                        alt={s.name}
-                        fill
-                        sizes="(max-width: 640px) 50vw, 280px"
-                        className="object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                        Sin foto
-                      </div>
-                    )}
-                    {s.years_experience != null && (
-                      <span className="absolute right-3 top-3 rounded-full border border-primary/40 bg-background/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-primary backdrop-blur-md">
-                        {s.years_experience}+ años
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-1 flex-col gap-1.5 p-5">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <h3 className="font-serif text-lg leading-tight">
-                        {s.name}
-                      </h3>
-                      {s.instagram_handle && (
-                        <a
-                          href={`https://instagram.com/${s.instagram_handle}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label={`Instagram de ${s.name}`}
-                          className="text-muted-foreground transition-colors hover:text-primary"
-                        >
-                          <svg
-                            aria-hidden
-                            viewBox="0 0 24 24"
-                            className="size-4"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <rect x="3" y="3" width="18" height="18" rx="5" />
-                            <circle cx="12" cy="12" r="4" />
-                            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
-                          </svg>
-                        </a>
-                      )}
-                    </div>
-                    {s.role && (
-                      <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
-                        {s.role}
-                      </p>
-                    )}
-                    {area && (
-                      <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-                        {area.name}
-                      </p>
-                    )}
-                    {s.specialties.length > 0 && (
-                      <ul className="mt-2 flex flex-wrap gap-1">
-                        {s.specialties.map((sp) => (
-                          <li
-                            key={sp}
-                            className="rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-foreground/80"
-                          >
-                            {sp}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {s.certifications && (
-                      <p className="mt-2 line-clamp-2 text-xs italic text-muted-foreground">
-                        {s.certifications}
-                      </p>
-                    )}
-                    {s.bio && (
-                      <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
-                        {s.bio}
-                      </p>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+          <StaffSection staff={staffList} areas={areaList} />
         </section>
       )}
 
