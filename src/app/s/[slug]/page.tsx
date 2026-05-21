@@ -9,6 +9,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ServicesTabs } from "./ServicesTabs";
 import { GalleryPaginated } from "./GalleryPaginated";
 import { StaffSection } from "./StaffSection";
+import { AreaChips } from "./AreaChips";
 import { composeAddress } from "@/lib/chile";
 import {
   DAYS,
@@ -20,24 +21,6 @@ import {
   type Service,
   type Staff,
 } from "@/lib/types";
-
-// Tripletes RGB para la animación area-pulse. Cada chip rota por uno
-// distinto vía idx % length. Se pasan como --pulse-r/g/b (propiedades
-// registradas con @property como <number>) para que var() funcione
-// correctamente dentro de @keyframes.
-const AREA_PULSE_COLORS: ReadonlyArray<[number, number, number]> = [
-  [251, 113, 133], // rose-400
-  [56, 189, 248], // sky-400
-  [167, 139, 250], // violet-400
-  [52, 211, 153], // emerald-400
-  [251, 146, 60], // orange-400
-  [244, 114, 182], // pink-400
-];
-
-// Duración del ciclo de la animación area-pulse (debe coincidir con el
-// valor en globals.css). El stagger se calcula como cycle / N para que la
-// secuencia sea perfecta sin importar cuántas áreas haya.
-const AREA_PULSE_CYCLE_MS = 6000;
 
 export async function generateMetadata({
   params,
@@ -271,31 +254,7 @@ export default async function SalonShowcasePage({
               {salon.description}
             </p>
           )}
-          {areaList.length > 0 && (
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {areaList.map((a, idx) => {
-                const [r, g, b] =
-                  AREA_PULSE_COLORS[idx % AREA_PULSE_COLORS.length];
-                const stagger = AREA_PULSE_CYCLE_MS / areaList.length;
-                return (
-                  <li
-                    key={a.id}
-                    className="area-pulse rounded-full border bg-background/30 px-3 py-1 text-xs font-bold uppercase tracking-[0.15em] text-primary backdrop-blur-md"
-                    style={
-                      {
-                        "--pulse-r": r,
-                        "--pulse-g": g,
-                        "--pulse-b": b,
-                        animationDelay: `${idx * stagger}ms`,
-                      } as React.CSSProperties
-                    }
-                  >
-                    {a.name}
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          {areaList.length > 0 && <AreaChips areas={areaList} />}
           <div className="mt-10 flex flex-wrap gap-3 sm:gap-4">
             <Link
               href={`/s/${salon.slug}/reservar`}
@@ -319,7 +278,10 @@ export default async function SalonShowcasePage({
 
       {/* Servicios por área */}
       {serviceList.length > 0 && (
-        <section className="border-b border-border px-4 py-10 sm:px-8 sm:py-12 lg:px-16 lg:py-14">
+        <section
+          id="servicios"
+          className="scroll-mt-24 border-b border-border px-4 py-10 sm:px-8 sm:py-12 lg:px-16 lg:py-14"
+        >
           <p className="text-xs font-bold uppercase tracking-[0.15em] text-primary">
             Carta de servicios
           </p>

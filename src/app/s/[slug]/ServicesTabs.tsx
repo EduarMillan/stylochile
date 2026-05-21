@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { SalonArea, Service } from "@/lib/types";
+import { AREA_SELECT_EVENT } from "./AreaChips";
 
 // Mismo mapeo de colores que los chips de áreas del hero — cada área
 // conserva su color a lo largo de toda la página pública.
@@ -58,6 +59,22 @@ export function ServicesTabs({
   }, [areas, services]);
 
   const [activeKey, setActiveKey] = useState<string>(groups[0]?.key ?? "");
+
+  // Escucha clicks en los chips de áreas del hero. Si el área tiene
+  // servicios (i.e. forma parte de los groups visibles aquí), la activa
+  // como pestaña. Si no, lo ignora — el scroll a la sección lo dispara
+  // el propio chip.
+  useEffect(() => {
+    function handle(e: Event) {
+      const targetKey = (e as CustomEvent<string>).detail;
+      if (groups.some((g) => g.key === targetKey)) {
+        setActiveKey(targetKey);
+      }
+    }
+    window.addEventListener(AREA_SELECT_EVENT, handle);
+    return () => window.removeEventListener(AREA_SELECT_EVENT, handle);
+  }, [groups]);
+
   const active = groups.find((g) => g.key === activeKey) ?? groups[0];
   if (!active) return null;
 
