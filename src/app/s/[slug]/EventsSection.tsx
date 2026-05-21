@@ -29,6 +29,7 @@ const TYPE_COLOR: Record<SalonEventType, [number, number, number]> = {
 };
 
 const SWIPE_THRESHOLD_PX = 50;
+const AUTOPLAY_INTERVAL_MS = 7000;
 
 export function EventsSection({
   events,
@@ -38,20 +39,50 @@ export function EventsSection({
   whatsapp: string | null;
 }) {
   const [index, setIndex] = useState(0);
+  // Permanente: el usuario tomó control (clickeó flecha/dot o hizo swipe).
+  const [autoStopped, setAutoStopped] = useState(false);
+  // Temporal: el mouse está encima — pausa mientras hovera, retoma al salir.
+  const [hovering, setHovering] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [detail, setDetail] = useState<SalonEvent | null>(null);
   const touchStartRef = useRef<number | null>(null);
 
-  if (events.length === 0) return null;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const total = events.length;
-  const safeIndex = ((index % total) + total) % total;
+  const safeIndex = total > 0 ? ((index % total) + total) % total : 0;
   const hasMultiple = total > 1;
+  const isPlaying =
+    hasMultiple && !autoStopped && !hovering && !reducedMotion;
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    const id = window.setInterval(() => {
+      setIndex((i) => i + 1);
+    }, AUTOPLAY_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [isPlaying]);
+
+  if (events.length === 0) return null;
 
   function prev() {
     setIndex((i) => i - 1);
+    setAutoStopped(true);
   }
   function next() {
     setIndex((i) => i + 1);
+    setAutoStopped(true);
+  }
+  function jumpTo(i: number) {
+    setIndex(i);
+    setAutoStopped(true);
   }
   function onTouchStart(e: React.TouchEvent) {
     touchStartRef.current = e.touches[0].clientX;
@@ -62,8 +93,9 @@ export function EventsSection({
     if (start === null) return;
     const delta = e.changedTouches[0].clientX - start;
     if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return;
-    if (delta > 0) prev();
-    else next();
+    setAutoStopped(true);
+    if (delta > 0) setIndex((i) => i - 1);
+    else setIndex((i) => i + 1);
   }
 
   return (
@@ -72,6 +104,8 @@ export function EventsSection({
         className="relative"
         aria-roledescription="carousel"
         aria-label="Cursos y eventos del salón"
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
       >
         <div
           className="relative overflow-hidden rounded-2xl"
@@ -82,7 +116,7 @@ export function EventsSection({
             className="flex transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${safeIndex * 100}%)` }}
           >
-            {events.map((e) => (
+            {events.map((e, i) => (
               <div
                 key={e.id}
                 role="group"
@@ -93,6 +127,8 @@ export function EventsSection({
                   event={e}
                   whatsapp={whatsapp}
                   onOpenDetail={() => setDetail(e)}
+                  isActive={i === safeIndex}
+                  slideKey={safeIndex}
                 />
               </div>
             ))}
@@ -104,14 +140,17 @@ export function EventsSection({
               <CarouselButton dir="next" onClick={next} />
             </>
           )}
+
+          {hasMultiple && isPlaying && (
+            <AutoplayProgress
+              key={safeIndex}
+              durationMs={AUTOPLAY_INTERVAL_MS}
+            />
+          )}
         </div>
 
         {hasMultiple && (
-          <CarouselDots
-            count={total}
-            active={safeIndex}
-            onSelect={setIndex}
-          />
+          <CarouselDots count={total} active={safeIndex} onSelect={jumpTo} />
         )}
       </div>
 
@@ -124,14 +163,33 @@ export function EventsSection({
   );
 }
 
+function AutoplayProgress({ durationMs }: { durationMs: number }) {
+  // Barra de progreso delgada en el borde inferior que se llena durante
+  // el intervalo de autoplay. Se reinicia con cada slide via key={}.
+  return (
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 h-0.5 overflow-hidden">
+      <div
+        className="h-full origin-left bg-primary/70"
+        style={{
+          animation: `event-autoplay-progress ${durationMs}ms linear forwards`,
+        }}
+      />
+    </div>
+  );
+}
+
 function EventCard({
   event: e,
   whatsapp,
   onOpenDetail,
+  isActive,
+  slideKey,
 }: {
   event: SalonEvent;
   whatsapp: string | null;
   onOpenDetail: () => void;
+  isActive: boolean;
+  slideKey: number;
 }) {
   const [r, g, b] = TYPE_COLOR[e.type];
   const rgb = `${r}, ${g}, ${b}`;
@@ -212,15 +270,17 @@ function EventCard({
         />
 
         {e.cover_image_url ? (
-          <Image
-            src={e.cover_image_url}
-            alt={e.title}
-            fill
-            sizes="100vw"
-            className="object-cover"
-            unoptimized
-            priority
-          />
+          <div className="event-banner-kenburns absolute inset-0">
+            <Image
+              src={e.cover_image_url}
+              alt={e.title}
+              fill
+              sizes="100vw"
+              className="object-cover"
+              unoptimized
+              priority
+            />
+          </div>
         ) : (
           <DecorativeBackdrop rgb={rgb} />
         )}
@@ -248,8 +308,14 @@ function EventCard({
           }}
         />
 
-        {/* Contenido */}
-        <div className="absolute inset-0 flex items-center p-10 xl:p-14">
+        {/* Contenido — keyed para que la entrada animada se dispare al
+            cambiar de slide. Inactivo: key estable, sin animación. */}
+        <div
+          key={isActive ? `c-${slideKey}` : `c-off-${e.id}`}
+          className={`absolute inset-0 flex items-center p-10 xl:p-14 ${
+            isActive ? "event-banner-content-enter" : ""
+          }`}
+        >
           <div className="max-w-xl">
             <span
               className="inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur-md"
