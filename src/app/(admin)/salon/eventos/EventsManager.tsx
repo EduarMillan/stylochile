@@ -387,10 +387,29 @@ function EventDialog({
                 aspect="wide"
               />
             </div>
-            <p className="mt-1 text-[10px] text-muted-foreground">
-              Formato horizontal panorámico (16:10). Lo que veas aquí es lo
-              que verán los clientes en la vitrina.
-            </p>
+            <div className="mt-2 rounded-lg border border-primary/25 bg-primary/5 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
+              <p className="font-bold uppercase tracking-[0.15em] text-primary">
+                Medidas recomendadas
+              </p>
+              <ul className="mt-1.5 space-y-0.5">
+                <li>
+                  <span className="text-foreground">Proporción:</span>{" "}
+                  16:10 horizontal (panorámica)
+                </li>
+                <li>
+                  <span className="text-foreground">Tamaño ideal:</span>{" "}
+                  1600 × 1000 px
+                </li>
+                <li>
+                  <span className="text-foreground">Mínimo:</span> 1200 × 750
+                  px para que no se vea borroso
+                </li>
+              </ul>
+              <p className="mt-1.5">
+                Evita poner texto importante muy cerca de los bordes — pueden
+                quedar tapados por el badge de tipo o el degradado del título.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_180px]">
