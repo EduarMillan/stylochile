@@ -384,12 +384,12 @@ function EventDialog({
                 value={coverUrl}
                 onChange={setCoverUrl}
                 label="Imagen"
-                aspect="landscape"
+                aspect="wide"
               />
             </div>
             <p className="mt-1 text-[10px] text-muted-foreground">
-              Recomendamos formato horizontal (16:9). Aparecerá en la vitrina
-              pública.
+              Formato horizontal panorámico (16:10). Lo que veas aquí es lo
+              que verán los clientes en la vitrina.
             </p>
           </div>
 

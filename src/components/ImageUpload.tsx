@@ -13,7 +13,7 @@ type Props = {
   value: string | null;
   onChange: (url: string | null) => void;
   label?: string;
-  aspect?: "square" | "portrait" | "landscape";
+  aspect?: "square" | "portrait" | "landscape" | "wide";
 };
 
 const ACCEPT = "image/png,image/jpeg,image/webp,image/heic,image/heif";
@@ -93,7 +93,9 @@ export function ImageUpload({
       ? "aspect-[3/4]"
       : aspect === "landscape"
         ? "aspect-[4/3]"
-        : "aspect-square";
+        : aspect === "wide"
+          ? "aspect-[16/10]"
+          : "aspect-square";
 
   return (
     <div className="flex flex-col gap-2">
