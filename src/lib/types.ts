@@ -116,6 +116,32 @@ export const COMMON_ROLES = [
   "Recepción",
 ];
 
+export type SalonEventType = "course" | "event" | "workshop";
+
+export type SalonEvent = {
+  id: string;
+  salon_id: string;
+  type: SalonEventType;
+  title: string;
+  description: string | null;
+  cover_image_url: string | null;
+  starts_at: string;
+  ends_at: string | null;
+  price: number | null;
+  currency: string;
+  capacity_label: string | null;
+  whatsapp_message: string | null;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export const EVENT_TYPE_LABEL: Record<SalonEventType, string> = {
+  course: "Curso",
+  event: "Evento",
+  workshop: "Taller",
+};
+
 export type SalonFacilityPhoto = {
   id: string;
   salon_id: string;

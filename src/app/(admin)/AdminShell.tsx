@@ -12,6 +12,7 @@ import {
   Building2,
   Users,
   Calendar,
+  CalendarHeart,
   UsersRound,
   Package,
   Star,
@@ -187,6 +188,14 @@ export function AdminShell({
             label="Equipo"
             icon={Users}
             iconColor="text-orange-400"
+            indent
+            pathname={pathname}
+          />
+          <SidebarLink
+            href="/salon/eventos"
+            label="Cursos & eventos"
+            icon={CalendarHeart}
+            iconColor="text-fuchsia-400"
             indent
             pathname={pathname}
           />

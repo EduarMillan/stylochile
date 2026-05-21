@@ -10,6 +10,8 @@ import { ServicesTabs } from "./ServicesTabs";
 import { GalleryPaginated } from "./GalleryPaginated";
 import { StaffSection } from "./StaffSection";
 import { AreaChips } from "./AreaChips";
+import { EventsSection } from "./EventsSection";
+import { EventsRibbon } from "./EventsRibbon";
 import { composeAddress } from "@/lib/chile";
 import {
   DAYS,
@@ -17,6 +19,7 @@ import {
   type Review,
   type Salon,
   type SalonArea,
+  type SalonEvent,
   type SalonFacilityPhoto,
   type Service,
   type Staff,
@@ -103,6 +106,7 @@ export default async function SalonShowcasePage({
     { data: reviews },
     { data: staff },
     { data: facilityPhotos },
+    { data: events },
   ] = await Promise.all([
     supabase
       .from("salon_areas")
@@ -140,6 +144,17 @@ export default async function SalonShowcasePage({
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false })
       .limit(18),
+    // Solo eventos futuros (incluyendo el actual si ends_at lo extiende).
+    // Filtramos por starts_at >= ahora-6h para tolerar eventos que
+    // arrancan en este preciso momento.
+    supabase
+      .from("salon_events")
+      .select("*")
+      .eq("salon_id", salon.id)
+      .eq("is_published", true)
+      .gte("starts_at", new Date(Date.now() - 6 * 3600_000).toISOString())
+      .order("starts_at", { ascending: true })
+      .limit(12),
   ]);
 
   const areaList = (areas as SalonArea[]) ?? [];
@@ -148,6 +163,14 @@ export default async function SalonShowcasePage({
   const reviewList = (reviews as Review[]) ?? [];
   const staffList = (staff as Staff[]) ?? [];
   const facilityList = (facilityPhotos as SalonFacilityPhoto[]) ?? [];
+  const eventList = (events as SalonEvent[]) ?? [];
+
+  // Ribbon en el hero solo si hay algo en las próximas 2 semanas.
+  const ribbonHorizonMs = 14 * 86_400_000;
+  const ribbonEvent =
+    eventList.find(
+      (e) => new Date(e.starts_at).getTime() - Date.now() <= ribbonHorizonMs,
+    ) ?? null;
 
   const ratingAvg =
     reviewList.length > 0
@@ -255,6 +278,7 @@ export default async function SalonShowcasePage({
             </p>
           )}
           {areaList.length > 0 && <AreaChips areas={areaList} />}
+          {ribbonEvent && <EventsRibbon next={ribbonEvent} />}
           <div className="mt-10 flex flex-wrap gap-3 sm:gap-4">
             <Link
               href={`/s/${salon.slug}/reservar`}
@@ -288,6 +312,26 @@ export default async function SalonShowcasePage({
           <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Lo que ofrecemos</h2>
 
           <ServicesTabs areas={areaList} services={serviceList} />
+        </section>
+      )}
+
+      {/* Eventos & cursos próximos */}
+      {eventList.length > 0 && (
+        <section
+          id="eventos"
+          className="scroll-mt-24 border-b border-border px-4 py-10 sm:px-8 sm:py-12 lg:px-16 lg:py-14"
+        >
+          <p className="text-xs font-bold uppercase tracking-[0.15em] text-primary">
+            Lo que viene
+          </p>
+          <h2 className="mt-3 font-serif text-3xl sm:text-4xl">
+            Cursos y eventos
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            Talleres, cursos y eventos que organizamos. Escríbenos por WhatsApp
+            para asegurar tu cupo.
+          </p>
+          <EventsSection events={eventList} whatsapp={salon.whatsapp} />
         </section>
       )}
 
