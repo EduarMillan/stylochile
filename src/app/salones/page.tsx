@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Directorio de salones",
   description:
     "Descubre los mejores salones de belleza de Chile. Filtra por región, ve fotos, horarios y reserva en segundos.",
+  alternates: { canonical: "/salones" },
   openGraph: {
     title: "Directorio de salones · StyloChile",
     description:

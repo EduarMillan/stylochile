@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: "Precios y plan mensual",
   description:
     "Plan único de StyloChile: trial gratuito, luego mensualidad. Sin contratos, paga por transferencia. Todo lo que necesita tu salón en una sola plataforma.",
+  alternates: { canonical: "/precios" },
   openGraph: {
     title: "Precios y plan mensual · StyloChile",
     description:

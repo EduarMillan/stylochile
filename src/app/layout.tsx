@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Manrope, Noto_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import {
+  jsonLdScriptProps,
+  organizationJsonLd,
+  siteJsonLd,
+} from "@/lib/schema";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -39,6 +44,10 @@ export const metadata: Metadata = {
     "reservar hora",
   ],
   authors: [{ name: "StyloChile" }],
+  alternates: {
+    canonical: "/",
+  },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "es_CL",
@@ -55,6 +64,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
@@ -72,6 +88,10 @@ export default function RootLayout({
         className="min-h-screen flex flex-col font-sans"
         suppressHydrationWarning
       >
+        {/* JSON-LD: WebSite (sitelinks search box) + Organization (logo
+            en knowledge panel). Se renderizan en cada página. */}
+        <script {...jsonLdScriptProps(siteJsonLd())} />
+        <script {...jsonLdScriptProps(organizationJsonLd())} />
         {children}
         <Analytics />
       </body>

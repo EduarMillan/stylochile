@@ -13,6 +13,7 @@ import { AreaChips } from "./AreaChips";
 import { EventsSection } from "./EventsSection";
 import { EventsRibbon } from "./EventsRibbon";
 import { composeAddress } from "@/lib/chile";
+import { jsonLdScriptProps, salonJsonLd } from "@/lib/schema";
 import {
   DAYS,
   type GalleryItem,
@@ -194,6 +195,9 @@ export default async function SalonShowcasePage({
 
   return (
     <div className="min-h-screen bg-background">
+      {/* JSON-LD para que Google muestre rich result de BeautySalon */}
+      <script {...jsonLdScriptProps(salonJsonLd(salon, serviceList, reviewList))} />
+
       {/* Hero con imagen de fondo */}
       <div className="relative isolate overflow-hidden border-b border-border/60">
         <div className="absolute inset-0 -z-20">
