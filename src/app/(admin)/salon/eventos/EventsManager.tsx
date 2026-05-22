@@ -301,39 +301,19 @@ function EventDialog({
   initial?: SalonEvent;
 }) {
   const [open, setOpen] = useState(false);
-  // Snapshot estable de `initial` mientras el diálogo está abierto. Se
-  // refresca al cerrar para que la próxima apertura muestre datos frescos.
-  const [snap, setSnap] = useState(initial);
+  // Cada vez que se abre el diálogo, incrementamos `generation`. Eso
+  // re-monta el subcomponente `EventDialogForm` con un `key` distinto,
+  // y el snapshot del `initial` queda capturado en su useState al
+  // mount — nunca cambia durante la vida del form. Así evitamos el
+  // warning de Base UI que se disparaba cuando `initial` se actualizaba
+  // por revalidate durante la animación de cierre del Popup (los 100ms
+  // entre setOpen(false) y el unmount).
+  const [generation, setGeneration] = useState(0);
 
-  const [type, setType] = useState<SalonEventType>(snap?.type ?? "event");
-  const [currency, setCurrency] = useState(snap?.currency ?? "CLP");
-  const [coverUrl, setCoverUrl] = useState<string | null>(
-    snap?.cover_image_url ?? null,
-  );
-  const [isPublished, setIsPublished] = useState(snap?.is_published ?? true);
-
-  const [state, action, pending] = useActionState<EventActionState, FormData>(
-    saveEventAction,
-    null,
-  );
-
-  useEffect(() => {
-    if (state?.success) {
-      toast.success(state.success);
-      setOpen(false);
-    }
-    if (state?.error) toast.error(state.error);
-  }, [state]);
-
-  useEffect(() => {
-    if (!open) {
-      setSnap(initial);
-      setType(initial?.type ?? "event");
-      setCurrency(initial?.currency ?? "CLP");
-      setCoverUrl(initial?.cover_image_url ?? null);
-      setIsPublished(initial?.is_published ?? true);
-    }
-  }, [open, initial]);
+  function handleOpenChange(next: boolean) {
+    if (next) setGeneration((g) => g + 1);
+    setOpen(next);
+  }
 
   const triggerLabel = initial ? "Editar" : "Nuevo evento";
   const triggerProps = initial
@@ -349,7 +329,7 @@ function EventDialog({
       };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger
         className={buttonVariants({
           variant: triggerProps.variant,
@@ -366,6 +346,55 @@ function EventDialog({
           </DialogTitle>
         </DialogHeader>
 
+        <EventDialogForm
+          key={generation}
+          salonId={salonId}
+          initial={initial}
+          onClose={() => setOpen(false)}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function EventDialogForm({
+  salonId,
+  initial,
+  onClose,
+}: {
+  salonId: string;
+  initial?: SalonEvent;
+  onClose: () => void;
+}) {
+  // `snap` capturado al mount y nunca cambia. El padre re-monta este
+  // componente vía `key` cada vez que el diálogo se abre, así siempre
+  // arranca con datos frescos.
+  const [snap] = useState(initial);
+
+  const [type, setType] = useState<SalonEventType>(snap?.type ?? "event");
+  const [currency, setCurrency] = useState(snap?.currency ?? "CLP");
+  const [coverUrl, setCoverUrl] = useState<string | null>(
+    snap?.cover_image_url ?? null,
+  );
+  const [isPublished, setIsPublished] = useState(snap?.is_published ?? true);
+
+  const [state, action, pending] = useActionState<EventActionState, FormData>(
+    saveEventAction,
+    null,
+  );
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success(state.success);
+      onClose();
+    }
+    if (state?.error) toast.error(state.error);
+    // onClose se redefine en cada render del padre, lo omitimos a
+    // propósito — solo nos importa reaccionar a cambios de `state`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
+  return (
         <form action={action} className="flex flex-col gap-5">
           {snap && <input type="hidden" name="id" value={snap.id} />}
           <input type="hidden" name="type" value={type} />
@@ -561,7 +590,7 @@ function EventDialog({
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
+            <Button type="button" variant="ghost" onClick={onClose}>
               Cancelar
             </Button>
             <Button type="submit" disabled={pending}>
@@ -569,8 +598,6 @@ function EventDialog({
             </Button>
           </DialogFooter>
         </form>
-      </DialogContent>
-    </Dialog>
   );
 }
 
